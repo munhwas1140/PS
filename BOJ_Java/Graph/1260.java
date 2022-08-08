@@ -1,4 +1,3 @@
-package 그래프;
 // DFS 와 BFS
 
 import java.io.*;

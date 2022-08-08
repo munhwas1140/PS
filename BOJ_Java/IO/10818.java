@@ -1,4 +1,3 @@
-package I.O;
 // 최소, 최대
 
 import java.io.*;
