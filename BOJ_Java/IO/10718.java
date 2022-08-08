@@ -1,4 +1,3 @@
-package I.O;
 /* We lov kriii */
 
 class Main {

@@ -1,12 +1,14 @@
-// A X B
-
 import java.util.Scanner;
+
+// A / B
 
 class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int a = sc.nextInt();
-        int b = sc.nextInt();
-        System.out.println(a * b);
+        double a, b;
+        a = sc.nextInt();
+        b = sc.nextInt();
+        System.out.println(a/b);
+
     }
 }
