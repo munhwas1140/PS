@@ -8,94 +8,89 @@ class Main {
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     static StringTokenizer st;
 
-    static int n;
-    static ArrayList<Integer>[] g;
-    static boolean[] visited;
-    static int[][] dp;
-    static int[] depth;
 
-    static void DFS(int now, int d) {
-        visited[now] = true;
-        depth[now] = d;
-        for(int next : g[now]) {
-            if(!visited[next]) {
-                dp[next][0] = now;
-                DFS(next, d + 1);
-            }
-        }
-    }
-
-    static void arrSet() {
-        for(int j = 1; j < 30; j++) {
-            for(int i = 1; i <= n; i++) {
-                dp[i][j] = dp[dp[i][j-1]][j-1];
-            }
-        }
-    }
-
-    static int LCA(int u, int v) {
-        if(depth[u] < depth[v]) {
-            int tmp = u;
-            u = v;
-            v = tmp;
-        }
-
-        int diff = depth[u] - depth[v];
-        for(int i = 0; diff != 0; i++) {
-            if((diff & 1) == 1) u = dp[u][i];
-            diff >>= 1;
-        }
-        
-        if(u == v) return u;
-
-        for(int i = 29; i >= 0; i--) {
-            if(dp[u][i] != dp[v][i]) {
-                u = dp[u][i];
-                v = dp[v][i];
-            }
-        }
-        return dp[u][0];
-    }
 
     public static void main(String[] args) throws IOException {
-        n = Integer.parseInt(br.readLine());
-        
-        init();
-
-        for(int i = 0; i < n - 1; i++) {
-            int t1, t2;
-            st = new StringTokenizer(br.readLine());
-            
-            t1 = Integer.parseInt(st.nextToken());
-            t2 = Integer.parseInt(st.nextToken());
-            g[t1].add(t2);
-            g[t2].add(t1);
-        }
-
-        DFS(1, 0);
-        arrSet();
-
-        int q = Integer.parseInt(br.readLine());
-        for(int i = 0; i < q; i++) {
-            int t1, t2;
-            st = new StringTokenizer(br.readLine());
-
-            t1 = Integer.parseInt(st.nextToken());
-            t2 = Integer.parseInt(st.nextToken());
-            bw.write(String.valueOf(LCA(t1,t2)) + "\n");
-        }
+        HashSet<Integer> set = new HashSet<>();
+        set.remo
+        String str = "DFSDF";
+        str.length()
 
         bw.close();
         br.close();
     }
+}
+class Solution {
+    private HashMap<String, Integer> wordCount = new HashMap<String, Integer>();
+    private int n;
+    private int wordLength;
+    private int substringSize;
+    private int k;
+    
+    private void slidingWindow(int left, String s, List<Integer> answer) {
+        HashMap<String, Integer> wordsFound = new HashMap<>();
+        int wordsUsed = 0;
+        boolean excessWord = false;
+        
+        // Do the same iteration pattern as the previous approach - iterate
+        // word_length at a time, and at each iteration we focus on one word
+        for (int right = left; right <= n - wordLength; right += wordLength) {
+            
+            String sub = s.substring(right, right + wordLength);
+            if (!wordCount.containsKey(sub)) {
+                // Mismatched word - reset the window
+                wordsFound.clear();
+                wordsUsed = 0;
+                excessWord = false;
+                left = right + wordLength;
+            } else {
+                // If we reached max window size or have an excess word
+                while (right - left == substringSize || excessWord) {
+                    String leftmostWord = s.substring(left, left + wordLength);
+                    left += wordLength;
+                    wordsFound.put(leftmostWord, wordsFound.get(leftmostWord) - 1);
 
-    static void init() {
-        g = new ArrayList[n + 1];
-        for(int i = 0; i < n + 1; i++) {
-            g[i] = new ArrayList<>();
+                    if (wordsFound.get(leftmostWord) >= wordCount.get(leftmostWord)) {
+                        // This word was an excess word
+                        excessWord = false;
+                    } else {
+                        // Otherwise we actually needed it
+                        wordsUsed--;
+                    }
+                }
+                
+                // Keep track of how many times this word occurs in the window
+                wordsFound.put(sub, wordsFound.getOrDefault(sub, 0) + 1);
+                if (wordsFound.get(sub) <= wordCount.get(sub)) {
+                    wordsUsed++;
+                } else {
+                    // Found too many instances already
+                    excessWord = true;
+                }
+                
+                if (wordsUsed == k && !excessWord) {
+                    // Found a valid substring
+                    answer.add(left);
+                }
+            }
         }
-        visited = new boolean[n + 1];
-        dp = new int[n + 1][30];
-        depth = new int[n + 1];
+    }
+    
+    public List<Integer> findSubstring(String s, String[] words) {
+        n = s.length();
+        k = words.length;
+        wordLength = words[0].length();
+        substringSize = wordLength * k;
+        
+        for (String word : words) {
+            wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+        }
+        
+        List<Integer> answer = new ArrayList<>();
+        for (int i = 0; i < wordLength; i++) {
+            slidingWindow(i, s, answer);
+        }
+        
+        return answer;
     }
 }

@@ -57,9 +57,9 @@ class Main {
 
         for(int i = 29; i >= 0; i--) {
             if(dp[u][i] != dp[v][i]) {
+                ans += dist[u][i] + dist[v][i];
                 u = dp[u][i];
                 v = dp[v][i];
-                ans += dist[u][i] + dist[v][i];
             }
         }
         return ans + dist[u][0] + dist[v][0];
@@ -67,7 +67,9 @@ class Main {
 
     public static void main(String[] args) throws IOException {
         n = Integer.parseInt(br.readLine());
-        
+        Map<Integer, Integer> map = new HashMap<>();
+        map.containsKey(1);
+        map. 
         init();
 
         for(int i = 0; i < n - 1; i++) {
