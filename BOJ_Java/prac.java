@@ -11,6 +11,7 @@ class Main {
 
 
     public static void main(String[] args) throws IOException {
+        Arrays.asList(a)
         HashSet<Integer> set = new HashSet<>();
         set.remo
         String str = "DFSDF";
