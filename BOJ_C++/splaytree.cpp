@@ -1,95 +1,95 @@
+// https://cubelover.tistory.com/10?category=203362
+
 #include <bits/stdc++.h>
 using namespace std;
-
 struct node {
-    node *l;
-    node *r;
-    node *p;
-    int cnt;
+    node *l, *r, *p;
     int key;
+    int cnt;
 } *tree;
 
-void update(node *x) {
+void Update(node *x) {
     x->cnt = 1;
-    if(x->l) x->cnt += x->l->cnt;
-    if(x->r) x->cnt += x->r->cnt;
+    if(x->l) x += x->l->cnt;
+    if(x->r) x += x->r->cnt;
 }
 
-void rotate(node *x) {
-    if(!x->p) return;
-    node *p = x->p;
-    node *q;
-    if(p->l == x) {
-        p->l = q = x->r;
+void Rotate(node *x) {
+    node *p = x->p; 
+    node *b = nullptr; 
+    if(x == p->l) { 
+        p->l = b = x->r;
         x->r = p;
     } else {
-        p->r = q = x->l;
+        p->r = b = x->l;
         x->l = p;
     }
-    if(q) q->p = p;
-    x->p = q = p->p;
+    x->p = p->p; 
     p->p = x;
-    if(!q) tree = x;
-    else if(q->l == p) q->l = x;
-    else if(q->r == p) q->r = x;
-    update(p);
-    update(x);
+    if(b) b->p = p;
+    if(x->p) {
+        if(x->p->l == p) x->p->l = x;
+        else x->p->r = x;
+    } else tree = x;
+    Update(p);
+    Update(x);
 }
 
-void splay(node *x, node *g = nullptr) {
-    node *y;
-    while(x->p != g) {
+void Splay(node *x) {
+    while(x->p) {
         node *p = x->p;
-        if(p->p == g) {
-            rotate(x) break;
-        }
-        auto pp = p->p;
-        if((p->l == x) == (pp->l == p)) {
-            rotate(p); rotate(x);
-        } else {
-            rotate(x); rotate(x);
-        }
+        node *g = p->p;
+        if(g) Rotate((x == p->l) == (p == g->l) ? p : x); 
+        Rotate(x);
+        // zig-zag rotate(x), rotate(x);
+        // zig-zig rotate(p), rotate(x)
+        // zig rotate(x) 후 종료됨
     }
-    if(!g) root = x;
 }
 
-void insert(int key) {
+void Insert(int key) {
     node *p = tree;
     node **pp;
     if(!p) {
         node *x = new node;
         tree = x;
-        x->l = x->r = x->p = NULL;
-        x->key = key; return;
+        x->l = x->r = x->p = nullptr;
+        x->key = key;
+        return ;
     }
+
     while(1) {
-        if(key == p->key) return ;
-        if(key < p->key) {
+        if(key == p->key) {
+            return ;
+        } else if(key < p->key) {
             if(!p->l) {
-                pp = &p->l; break;
+                pp = &p->l;
+                break;
             }
             p = p->l;
         } else {
             if(!p->r) {
-                pp = &p->r; break;
+                pp = &p->r;
+                break;
             }
             p = p->r;
         }
     }
     node *x = new node;
     *pp = x;
-    x->l = x->r = NULL;
+    x->l = x->r = nullptr;
     x->p = p;
     x->key = key;
-    splay(x);
+    Splay(x);
 }
 
-bool find(int key) {
+bool Find(int key) {
     node *p = tree;
     if(!p) return false;
     while(p) {
-        if(key == p->key) break;
-        if(key < p->key) {
+        if(key == p->key) {
+            break;
+        } else if(key < p->key) {
             if(!p->l) break;
             p = p->l;
         } else {
@@ -97,27 +97,43 @@ bool find(int key) {
             p = p->r;
         }
     }
-    splay(p);
+    Splay(p);
     return key == p->key;
 }
 
 void Delete(int key) {
-    if(!find(key)) return ;
-    node *p = tree;
-    if(p->l && p->r) {
-        tree = p->l;
-        tree->p = NULL;
-
-        node *x = tree;
-        while(x->r) x = x->r;
-        x->r = p->r;
-        p->r->p = x;
-        delete p;
+    if(!Find(key)) return ;
+    node *root = tree;
+    if(root->l) {
+        if(root->r) {
+            tree = root->l;
+            tree->p = nullptr;
+            node *x = tree;
+            while(x->r) x = x->r;
+            x->r = root->r;
+            x->r->p = x;
+            Splay(x);
+            delete root;
+            return ;
+            // 원래 루트의 왼쪽 서브트리를 루트로 하고
+            // 왼쪽 서브트리 맨 오른쪽에 원래 서루트의 오른쪽 서브트리를 붙이고
+            // 오른쪽 서브트리를 붙인 노드를 스플레이해서 위로올림 ㅁㅊ
+        }
+        tree = root->l;
+        tree->p = nullptr;
+        delete root;
+        return ;
+    } else if(root->r) {
+        tree = root->r;
+        tree->p = nullptr;
+        delete root;
         return ;
     }
+    delete root;
+    tree = nullptr;
 }
 
-void kth(int k) {
+void kth(int k) { // 0-based
     node *x = tree;
     while(1) {
         while(x->l && x->l->cnt > k) x = x->l;
@@ -125,34 +141,9 @@ void kth(int k) {
         if(!k--) break;
         x = x->r;
     }
-    splay(x);
-}
-
-void ino(node *x) {
-    if(!x) return;
-    ino(x->l);
-    cout << x->key << ' ';
-    ino(x->r);
-}   
-
-node* gather(int s, int e) {
-    kth(e+1);
-    auto tmp = root;
-    key(s-1);
-    splay(tmp, root);
-    return root->r->l;
+    Splay(x);
 }
 
 int main() {
-    int n, m, k;
-    cin >> n >> m >> k;
-    int q = m + k;
-    for(int i = 0; i < n; i++) {
-        long long t; 
-        cin >> t;
-        insert(t);
-    }
-    while(q--) {
-        
-    }
+
 }
