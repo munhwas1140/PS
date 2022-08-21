@@ -1,7 +1,7 @@
 // #include <bits/stdc++.h>
 // using namespace std;
 
-// // 주유소
+// 주유소
 
 // long long cost[2501];
 // vector<pair<int, long long>> g[2501];
@@ -106,6 +106,7 @@ int main() {
         auto [d,mincost, now] = pq.top();
         pq.pop();
         d = -d;
+        if(dist[mincost][now] < d) continue;
         for(auto next : g[now]) {
             if(dist[mincost][next.first] > d + mincost * next.second) {
                 dist[mincost][next.first] = d + mincost * next.second;
