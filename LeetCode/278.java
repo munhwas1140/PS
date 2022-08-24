@@ -1,6 +1,6 @@
 /* The isBadVersion API is defined in the parent class VersionControl.
       boolean isBadVersion(int version); */
-import java.uti.*;
+import java.util.*;
 import java.io.*;
 
 // First Bad Version
