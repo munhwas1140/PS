@@ -1,47 +1,44 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cmath>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+#include <chrono>
+#include <deque>
+#include <iomanip>
+#include <queue>
+#include <functional>
+ 
 using namespace std;
-#define fastio cin.tie(0)->sync_with_stdio(0)
-using ll = long long;
-
-
-int main() {
-    fastio;
+ 
+#define int long long
+ 
+int32_t main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
     int n, m;
     cin >> n >> m;
-    vector<int> a(n);
-    ll ans = 0, tmp = 1;
-    for(int i = 0; i < n; i++) {
+    vector<int> a(n + 2, 0);
+    for (int i = 1; i <= n; ++i) {
         cin >> a[i];
-        if(i > 0) {
-            if(a[i] != a[i-1]) tmp += i + 1;
-            else tmp += 1;
-        } 
-        ans += tmp;
     }
-    // cout << ans << '\n';
-    while(m--) {
-        int idx, v;
-        cin >> idx >> v;
-        idx -= 1;
-
-
-        if(idx > 0) {
-            if(a[idx-1] == a[idx] && a[idx - 1] != v) {
-                ans += (n - idx) * idx;
-            } else if(a[idx - 1] != a[idx] && a[idx - 1] == v) {
-                ans -= (n - idx) * idx;
-            }
-        }
-        if(idx < n - 1) {
-            if(a[idx + 1] != a[idx] && a[idx + 1] == v) {
-                ans -= (n - (idx + 1)) * (idx + 1);
-            } else if(a[idx + 1] == a[idx] && a[idx + 1] != v) {
-                ans += (n - (idx + 1)) * (idx + 1);
-            }
-        }
-        a[idx] = v;
-        cout << ans << '\n';
+    int ans = 0;
+    for (int i = 1; i <= n; ++i) {
+        ans += (a[i] != a[i + 1]) * (n - (i + 1) + 1) * i;
     }
-      
-    return 0;
+    while (m--) {
+        int i, x;
+        cin >> i >> x;
+        ans -= (a[i] != a[i - 1]) * (n - i + 1) * (i - 1);
+        ans -= (a[i + 1] != a[i]) * (n - (i + 1) + 1) * i;
+        a[i] = x;
+        ans += (a[i] != a[i - 1]) * (n - i + 1) * (i - 1);
+        ans += (a[i + 1] != a[i]) * (n - (i + 1) + 1) * i;
+        cout << ans + n * (n + 1) / 2 << '\n';
+    }
 }
