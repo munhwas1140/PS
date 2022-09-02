@@ -3,30 +3,37 @@ using namespace std;
 #define fastio cin.tie(0)->sync_with_stdio(0)
 using ll = long long;
 
-
-int main() {
-    fastio;
-    int n, m;
-    cin >> n >> m;
-    vector<int> a(n);
-    ll ans = 0;
-    for(int i = 0; i < n; i++) {
+bool solve(){
+    int n; cin >> n;
+    vector<int> a(n),b(n);
+    for(int i=0;i<n;i++){
         cin >> a[i];
-        if(i > 0) {
-            if(a[i] != a[i-1]) ans += (n - (i + 1)) * (i + 1);
+    }
+    for(int i=0;i<n;i++){
+        cin >> b[i];
+    }
+    for(int i=0;i<n;i++){
+        if(a[i] > b[i]) return false;
+        else if(a[i] == b[i]) continue;
+        else{
+            int j = (i+1 == n ? 0 : i+1);
+            cout << b[j] << ' ' << b[i] << '\n';
+            if(b[j]+1 < b[i]) return false;
         }
     }
-    
-    while(m--) {
-        int i, x; cin >> i >> x;
-        i -= 1;
-
-        ans -= (a[i] != a[i-1]) * (n - i) * i;
-        ans -= (a[i] != a[i+1]) * (n - (i + 1)) * (i + 1);
-        a[i] = x;
-        ans += (a[i] != a[i-1]) * (n - i) * i;
-        ans += (a[i] != a[i+1]) * (n - (n + 1)) * (i + 1);
-        cout << ans + n * (n + 1) / 2 << '\n';
+    return true;
+}
+ 
+int main(){
+    cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    int q; cin >> q;
+    while(q--){
+        if(solve()){
+            cout << "Yes" << "\n";
+        }
+        else{
+            cout << "No" << "\n";
+        }
     }
-    return 0;
 }
