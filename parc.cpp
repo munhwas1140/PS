@@ -1,44 +1,14 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <cmath>
-#include <map>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <chrono>
-#include <deque>
-#include <iomanip>
-#include <queue>
-#include <functional>
- 
+#include <bits/stdc++.h>
 using namespace std;
- 
-#define int long long
- 
-int32_t main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
-    cout.tie(0);
-    int n, m;
-    cin >> n >> m;
-    vector<int> a(n + 2, 0);
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
-    }
-    int ans = 0;
-    for (int i = 1; i <= n; ++i) {
-        ans += (a[i] != a[i + 1]) * (n - (i + 1) + 1) * i;
-    }
-    while (m--) {
-        int i, x;
-        cin >> i >> x;
-        ans -= (a[i] != a[i - 1]) * (n - i + 1) * (i - 1);
-        ans -= (a[i + 1] != a[i]) * (n - (i + 1) + 1) * i;
-        a[i] = x;
-        ans += (a[i] != a[i - 1]) * (n - i + 1) * (i - 1);
-        ans += (a[i + 1] != a[i]) * (n - (i + 1) + 1) * i;
-        cout << ans + n * (n + 1) / 2 << '\n';
-    }
+
+int gcd(int a, int b) {
+    if(b == 0) return a;
+    return gcd(b, a % b);
 }
+int main() {
+    int a, b;
+    cin >> a >> b;
+    cout << gcd(a, b);
+}
+
+//12 , 5, 78, 7, 6, 3

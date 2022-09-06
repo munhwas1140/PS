@@ -32,14 +32,14 @@ int main() {
             set_union(t2, t1);
             cout << "LADICA" << '\n';
         } else {
-            int x = p[t1];
+            int x = find(t1);
             if(!check[x]) {
                 set_union(x, t2);
                 check[x] = true;
                 cout << "LADICA" << '\n';
                 continue;
             }
-            x = p[t2];
+            x = find(t2);
             if(!check[x]) {
                 set_union(x, t1);
                 check[x] = true;
