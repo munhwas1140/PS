@@ -2,12 +2,13 @@
 using namespace std;
 #define fastio cin.tie(0)->sync_with_stdio(0)
 using ll = long long;
-
 int n;
-vector<int> g[1000001];
-vector<int> child[1000001];
-int dp[1000001][2];
-bool visited[1000001];
+int a[10001];
+vector<int> g[10001];
+vector<int> child[10001];
+int dp[10001][2];
+bool visited[10001];
+vector<int> ans;
 void DFS(int now) {
     visited[now] = true;
     for(int &next : g[now]) {
@@ -17,39 +18,37 @@ void DFS(int now) {
         }
     }
 }
-int go(int now, bool prev) {
 
+int go(int now, int prev) {
     int &ret = dp[now][prev];
     if(ret != -1) return ret;
-
-    int pick = 1, notpick = 1e9;
-    
+    int pick = -1e9, notpick = 0;
     for(int &next : child[now]) {
-        pick += go(next,1);
+        notpick += go(next,0);
     }
-    
-    if(prev) {
-        notpick = 0;
+    if(!prev) {
+        pick = a[now];
         for(int &next : child[now]) {
-            notpick += go(next,0); 
+            pick += go(next, 1);
         }
     }
-    return ret = min(pick, notpick);
+    return ret = max(pick, notpick);
 }
 void tracking(int now, int prev) {
-    int notpick = 1e9, pick = 1;
+    
+    int notpick = 0, pick = -1e9;
     for(int &next : child[now]) {
-        pick += go(next,1);
+        notpick += go(next, 0);
     }
-    if(prev) {
-        notpick = 0;
+    if(!prev) {
+        pick = a[now];
         for(int &next : child[now]) {
-            notpick += go(next, 0);
+            pick += go(next, 1);
         }
     }
 
-    if(pick < notpick) {
-        cout << now << "-> pick" << '\n';
+    if(notpick < pick) {
+        ans.push_back(now);
         for(int &next : child[now]) {
             tracking(next, 1);
         }
@@ -62,6 +61,10 @@ void tracking(int now, int prev) {
 int main() {
     fastio;
     cin >> n;
+    for(int i = 1; i <= n; i++) {
+        cin >> a[i];
+    }
+    
     for(int i = 0; i < n - 1; i++) {
         int t1, t2;
         cin >> t1 >> t2;
@@ -69,8 +72,13 @@ int main() {
         g[t2].push_back(t1);
     }
     DFS(1);
+
     memset(dp,-1,sizeof(dp));
-    cout << go(1, 1) << '\n';
-    // tracking(1, 1);
+    cout << go(1,0) << '\n';
+    tracking(1,0);
+    sort(ans.begin(), ans.end());
+    for(int &i : ans) {
+        cout << i << ' ';
+    }
     return 0;
 }
