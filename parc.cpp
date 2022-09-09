@@ -1,14 +1,16 @@
 #include <bits/stdc++.h>
 using namespace std;
+#define fastio cin.tie(0)->sync_with_stdio(0)
+using ll = long long;
 
-int gcd(int a, int b) {
-    if(b == 0) return a;
-    return gcd(b, a % b);
-}
 int main() {
-    int a, b;
-    cin >> a >> b;
-    cout << gcd(a, b);
+    fastio;     
+    int tc;
+    cin >> tc;
+    while(tc--) {
+        ll a, b, c, d;
+        cin >> a >> b >> c >> d;
+        
+    } 
+    return 0;
 }
-
-//12 , 5, 78, 7, 6, 3
