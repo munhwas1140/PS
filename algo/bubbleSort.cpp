@@ -5,7 +5,6 @@ using ll = long long;
 using ld = long double;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-#define MAX_SIZE 1000
 void Swap(int *a, int *b) {
     int tmp = *a;
     *a = *b;
@@ -60,16 +59,12 @@ int main() {
     int tc; cin >> tc;
     while(tc--) {
         int n; cin >> n;
-        int a[MAX_SIZE];
-        int b[MAX_SIZE]; 
-        int c[MAX_SIZE];
+        int a[1000], b[1000], c[1000];
         for(int i = 0; i < n; i++) {
             cin >> a[i];
             c[i] = b[i] = a[i];
         }
-        b1(a, n);
-        b2(b, n);
-        b3(c, n);
+        b1(a, n); b2(b, n); b3(c, n);
     }     
       
     return 0;
