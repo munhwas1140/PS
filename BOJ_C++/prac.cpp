@@ -18,43 +18,32 @@ int main() {
         cin >> n >> x >> y;
         string t1, t2;
         cin >> t1 >> t2;
-        vector<int> diff(n);
-        int diffnum = 0;
-        for(int i = 0; i < n; i++) {
-            diff[i] = (t1[i] != t2[i]);
-            diffnum += diff[i];
+        t1 = " " + t1;
+        t2 = " " + t2;
+        vector<int> diff;
+        for(int i = 1; i <= n; i++) {
+            if(t1[i] != t2[i]) {
+                diff.push_back(i);
+            }
         }
-        if(diffnum % 2) {
+        if(diff.size() % 2) {
             cout << -1 << '\n';
             continue;
         }
-        // for(int i = 0; i < n ; i++) {
-        //     cout << diff[i] << ' ' ;
-        // }
-        // cout << '\n';
-        // cout << diffnum << '\n';
-        // cout << '\n';
         ll ans = 0;
-        if(x > y * 2 && n >= 4) {
-            if(diffnum > 2) {
-                ans += y * 2;
-            } else {
-                if(diff[0] && diff[1] || diff[1] && diff[2] || diff[2] && diff[3]) {
+        int m = diff.size() / 2;
+        for(int i = 0; i < m; i++) {
+            int p1 = diff[i];
+            int p2 = diff[i + m];
+            if(p1 + 1 == p2) {
+                if(y * 2 <= x) {
                     ans += y * 2;
-                } else ans = y * (diffnum / 2);
-            }
-        } else if(x > y * 2 && n == 3) {
-            if(diff[0] && diff[2]) ans = y;
-            else if(diff[1]) ans = x;
-        } else {
-            for(int i = 0; i < n - 1; i++) {
-                if(diff[i] && diff[i+1]) {
+                } else {
                     ans += x;
-                    diff[i] = 0; diff[i+1] = 0;
-                    diffnum -= 2;
                 }
+            } else {
+                ans += y;
             }
-            ans += y * (diffnum / 2);
         }
         cout << ans << '\n';
     }
