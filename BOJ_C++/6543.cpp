@@ -10,7 +10,10 @@ using pli = pair<ll, int>;
 
 int main() {
     fastio;
-
+    int tc; cin >> tc;
+    while(tc--) {
+        
+    }
 
     return 0;
 }
