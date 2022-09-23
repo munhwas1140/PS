@@ -7,89 +7,62 @@ using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 using pil = pair<int, ll>;
 using pli = pair<ll, int>;
-
-int n, m;
-vector<vector<int>> a;
 map<vector<int>, int> M;
-int indeg[1000];
-int outdeg[1000];
-vector<int> g[1000];
+vector<vector<int>> aa;
+int indeg[1010];
+int outdeg[1010];
+int g[1010][1010];
+int n, m;
+int cnt;
 vector<int> ans;
-
 void go(int now) {
-    for(int &next : g[now]) {
-        if(indeg[next]) {
-            outdeg[now]--;
-            indeg[next]--;
-            go(next);
+    for(int i = 0; i < cnt; i++) {
+        while(g[now][i]) {
+            g[now][i]--;
+            go(i);
         }
     }
-    ans.push_back(a[now][0]);
+    ans.push_back(now);
 }
-
 int main() {
     fastio;
     cin >> n >> m;
     for(int i = 0; i < n - m + 1; i++) {
-        vector<int> tmp(m);
+        vector<int> a, b;
         for(int j = 0; j < m; j++) {
-            cin >> tmp[j];
+            int tmp; cin >> tmp;
+            if(j < m - 1) a.push_back(tmp);
+            if(j > 0) b.push_back(tmp);
         }
-        if(M.find(tmp) != M.end()) {
-            int idx = M[tmp];
-            g[idx].push_back(idx);
-            indeg[idx]++;
-            outdeg[idx]++;
-        } else {
-            M[tmp] = (int)a.size();
-            a.push_back(tmp);
+        if(!M.count(a)) {
+            M[a] = cnt++;
+            aa.push_back(a);
         }
+        if(!M.count(b)) {
+            M[b] = cnt++;
+            aa.push_back(b);
+        }
+        int t1 = M[a], t2 = M[b];
+        outdeg[t1]++;
+        indeg[t2]++;
+        g[t1][t2]++;
     }
-
-    if(n == m) {
-        for(int i = 0; i < m; i++) {
-            cout << a[0][i] << ' ';
-        }
-        return 0;
-    }
-    int sz = a.size(); 
-    for(int i = 0; i < sz; i++) {
-        for(int j = 0; j < sz; j++) {
-            if(i == j) continue;
-            bool ok = true;
-            for(int k = 0; k < m - 1; k++) {
-                if(a[i][k+1] != a[j][k]) {
-                    ok = false;
-                    break;
-                }
-            }
-            if(ok) {
-                g[i].push_back(j);
-                outdeg[i]++;
-                indeg[j]++;
-            }
-        }
-    }
-    
-    int s = 0, e = 0;
-    for(int i = 0; i < sz; i++) {
-        // cout << indeg[i] << ' ' << outdeg[i] << '\n';
+    int s, e;
+    s = e = 0;
+    for(int i = 0; i < cnt; i++) {
         if(indeg[i] - outdeg[i] == 1) {
             e = i;
         } else if(outdeg[i] - indeg[i] == 1) {
             s = i;
         }
     }
-
     go(s);
     reverse(ans.begin(), ans.end());
-
-    for(int &i : ans) {
+    for(int i = 0; i < ans.size() - 1; i++) {
+        cout << aa[ans[i]][0] << ' ';
+    }
+    for(int &i : aa[ans[ans.size() - 1]]){
         cout << i << ' ';
     }
-    for(int i = 1; i < m; i++) {
-        cout << a[e][i] << ' ';
-    }
-    cout << '\n';
     return 0;
 }
