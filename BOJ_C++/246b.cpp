@@ -10,16 +10,11 @@ using pli = pair<ll, int>;
 
 int main() {
     fastio;
-    double a, b, d;
-    cin >> a >> b >> d;
-    double r = hypot(a, b);
+    double a, b;
+    cin >> a >> b;
+    cout << fixed << setprecision(10);
+    // cout << a / hypot(a, b) << ' ' << b / hypot(a, b) << '\n';
     double theta = atan2(b, a);
-
-    theta += d * acos(-1.0) / 180.0;
-
-    double x = cos(theta) * r;
-    double y = sin(theta) * r;
-    
-    cout << fixed << setprecision(10) << x << ' ' << y << '\n';
+    cout << cos(theta) << ' ' << sin(theta) << '\n';
     return 0;
 }
