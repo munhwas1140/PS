@@ -10,12 +10,11 @@ using pli = pair<ll, int>;
 
 int main() {
     fastio;
-    map<int, int> ID;
-    cout << ID.count(0) << '\n';
-
-    cout << ID.count(0) << '\n';
-    ID[0] = 0;
-    cout << ID.count(0);
+    int a[10];
+    memset(a, 0x3e,sizeof(a));
+    for(int i = 0; i < 10; i++) {
+        cout << a[i] << ' ';
+    }
 
     return 0;
 }

@@ -8,9 +8,12 @@ using pll = pair<ll, ll>;
 using pil = pair<int, ll>;
 using pli = pair<ll, int>;
 int n, m, SCCcnt;
-int SCC[2001];
 vector<int> g[2001], gp[2001], order;
 bool visited[2001];
+int SCC[2001];
+int neg(int now) {
+    return (now % 2 ? now - 1 : now + 1);
+}
 void dfs(int now) {
     visited[now] = true;
     for(int &next : g[now]) {
@@ -25,25 +28,23 @@ void dfs_rev(int now, int num) {
         if(!visited[next]) dfs_rev(next, num);
     }
 }
-int neg(int now) {
-    return (now % 2 ? now - 1 : now + 1);
-}
 void init() {
+    memset(visited,false,sizeof(visited));
+    memset(SCC,0,sizeof(SCC));
     for(int i = 0; i < 2001; i++) {
         g[i].clear();
         gp[i].clear();
     }
-    memset(visited,false,sizeof(visited));
     order.clear();
     SCCcnt = 0;
-    memset(SCC,0,sizeof(SCC));
 }
 int main() {
     fastio;
     while(cin >> n >> m) {
         init();
         for(int i = 0; i < m; i++) {
-            int t1, t2; cin >> t1 >> t2;
+            int t1, t2;
+            cin >> t1 >> t2;
             t1 = (t1 < 0 ? -(t1 + 1) * 2 + 1 : (t1 - 1) * 2);
             t2 = (t2 < 0 ? -(t2 + 1) * 2 + 1 : (t2 - 1) * 2);
             int nt1 = neg(t1);
@@ -53,12 +54,6 @@ int main() {
             gp[t2].push_back(nt1);
             gp[t1].push_back(nt2);
         }
-
-        g[1].push_back(0);
-        g[1].push_back(0);
-        gp[0].push_back(1);
-        gp[0].push_back(1);
-        
         for(int i = 0; i < 2 * n; i++) {
             if(!visited[i]) dfs(i);
         }
@@ -69,16 +64,12 @@ int main() {
         for(int &i : order) {
             if(!SCC[i]) dfs_rev(i, ++SCCcnt);
         }
-        
-        bool ok = true;
+        bool ok = true;        
         for(int i = 0; i < n; i++) {
-            if(SCC[i * 2] == SCC[i * 2 + 1]) {
-                ok = false;
-                break;
-            }
+            if(SCC[i * 2] == SCC[i * 2 + 1]) ok = false;
         }
-        if(ok) cout << "yes" << '\n';
-        else cout << "no" << '\n';
+        cout << ok << '\n';
     }
+
     return 0;
 }
