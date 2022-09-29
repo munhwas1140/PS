@@ -2,10 +2,7 @@
 using namespace std;
 #define fastio cin.tie(0)->sync_with_stdio(0)
 using ll = long long;
-using ld = long double;
 using pll = pair<ll, ll>;
-using pil = pair<int, ll>;
-using pli = pair<ll, int>;
 typedef pair<int,int> Point;
 struct Line {
     Point p1, p2;
