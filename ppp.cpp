@@ -4,46 +4,34 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-int n, k;
-vector<int> g[200001];
-int dfs(int now, int dep,int mid) {
-    int ret = 0;
-    if(dep > mid) {
-        dep = 1;
-        ret++;
+int a[2001];
+int dp[2001][2001];
+int go(int s, int e) {
+    int &ret = dp[s][e];
+    if(ret != -1) return ret;
+    if(s == e) return ret = 1;
+    if(s + 1 == e) {
+        if(a[s] == a[e]) ret = 1;
+        else ret = 0;
+        return ret ;
     }
-    for(int &next : g[now]) {
-        ret += dfs(next, dep + 1, mid);
-    }
-    return ret;
-}
-int check(int mid) {
-    return dfs(1,0,mid);
+    if(a[s] != a[e]) return ret = false;
+    return ret = go(s + 1, e - 1);
 }
 int main() {
     fastio;
-    int tc; cin >> tc;
-    while(tc--) {
-        for(int i = 0; i < 200001; i++) {
-            g[i].clear();
-        }
-        cin >> n >> k;
-        for(int i = 2; i <= n; i++) {
-            int tmp;
-            cin >> tmp;
-            g[tmp].push_back(i);
-        }
+    memset(dp,-1,sizeof(dp));
+    int n; cin >> n;
+    for(int i = 1; i <= n; i++) {
+        cin >> a[i];
+    }
 
-        int l = 1, r = 2e5+1;
-        int ans = 1;
-        while(l <= r) {
-            int m = (l + r) / 2;
-            if(check(m) <= k) {
-                ans = m;
-                r = m - 1;    
-            } else l = m + 1;
-        }
-        cout << ans << '\n';
+    int m;
+    cin >> m;
+    while(m--) {
+        int t1, t2;
+        cin >> t1 >> t2;
+        cout << go(t1, t2) << '\n';
     }
 
     return 0;
