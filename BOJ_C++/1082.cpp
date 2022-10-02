@@ -12,9 +12,13 @@ int main() {
     for(int i = 0; i < n; i++) {
         cin >> a[i];
     }
-    cin >> m;
-
+    cin >> m;   
+    int maxsz = -1;
+    for(int i = 0; i < n; i++) {
+        maxsz = max(maxsz, m / a[i]);
+    }
 
     
+
     return 0;
 }
