@@ -8,13 +8,13 @@ int n, m, pre[444];
 struct edge {
     int to, c, f;
     edge *rev;
-    edge(int to, int c) : to(to), c(c), f(0) {}
+    edge(int to, int c) : to(to), c(c), f(0), rev(nullptr) {}
     int spare() {
         return c - f;
     }
     void addFlow(int f1) {
         f += f1;
-        rev->f += f1;
+        rev->f -= f1;
     }
 };
 vector<edge *> g[444];
@@ -29,7 +29,7 @@ int main() {
             e1->rev = e2;
             e2->rev = e1;
             g[i].push_back(e1);
-            g[x].push_back(e2);
+            g[n + x].push_back(e2);
         }
     }
 
