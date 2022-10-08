@@ -57,20 +57,26 @@ int main() {
     }
     for(int i = 1; i <= n; i++) {
         cin >> a[i].second;
-        update2(1,0,1e6,a[i].second, 1);
+        update2(1,0,1e6,a[i].second,1);
     }
     sort(a.begin() + 1, a.end());
     ll ans = 0;
-    // for(int i = 0; i <= 5; i++) {
-    //     cout << q2(1,0,1e6,i,1e6) << '\n';
-    // }
     for(int i = 1; i <= n; i++) {
-        update2(1,0,1e6,a[i].second, -1);
-        ll t1 = q1(1,0,1e6,0,a[i].second - 1);
-        ll t2 = q2(1,0,1e6,a[i].second + 1, 1e6);
-        cout << t1 << ' ' << t2 << '\n';
-        ans += t1 * t2;
-        update1(1,0,1e6,a[i].second, 1);
+        int s = i, e = i;
+        while(e < n && a[e].first == a[e + 1].first) e++;
+        for(int j = s; j <= e; j++) {
+            update2(1,0,1e6,a[j].second, -1);
+        }
+        for(int j = s; j <= e; j++) {
+            ll t1 = q1(1,0,1e6,0,a[j].second - 1);
+            ll t2 = q2(1,0,1e6,a[j].second + 1, 1e6);
+            // cout << j << ' ' << t1 << ' ' << t2 << '\n';
+            ans += t1 * t2;
+        }
+        for(int j = s; j <= e; j++) {
+            update1(1,0,1e6,a[j].second, 1);
+        }
+        i = e;
     }
     cout << ans << '\n';
     return 0;
