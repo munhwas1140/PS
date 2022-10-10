@@ -4,53 +4,33 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-int n, k;
-map<vector<int>, int> M;
-vector<vector<int>> a;
+int gcd(int a, int b) {
+    if(b == 0) return a;
+    return gcd(b, a % b);
+}
 int main() {
     fastio;
-    cin >> n >> k;
-    a.resize(n + 1);
-    for(int i = 1; i <= n; i++) {
-        a[i].resize(k);
-        for(int j = 0; j < k; j++) {
-            cin >> a[i][j];
+    int tc;
+    cin >> tc;
+    while(tc--) {
+        int n; cin >> n;
+        vector<int> a(n);
+        for(int i = 0; i < n; i++) {
+            cin >> a[i];
         }
-        M[a[i]] = i;
+        bool ok = true;
+        for(int i = 0; i < n - 2; i++) {
+            if(gcd(a[i], a[i + 2]) > gcd(a[i], a[i + 1])) {
+                ok = false;
+                break;
+            }
+        }
+
+
+        
+        if(ok) cout << "YES" << '\n';
+        else cout << "NO" << '\n';
     }
-
-
-    ll ans = 0;
-    for(int i = 1; i <= n; i++) {
-        ll cnt = 0;
-        for(int j = i + 1; j <= n; j++) {
-            if(i == j) continue;
-            vector<int> tmp(k);
-            for(int x = 0; x < k; x++) {
-                if(a[i][x] == a[j][x]) tmp[x] = a[i][x];
-                else tmp[x] = 3 - a[i][x] - a[j][x];
-            }
-            
-            if(M.count(tmp) && (M[tmp] > j || M[tmp] < i)) {
-                cnt++;
-            }
-        }
-
-        for(int j = 1; j < i; j++) {
-            vector<int> tmp(k);
-            for(int x = 0; x < k; x++) {
-                if(a[i][x] == a[j][x]) tmp[x] = a[i][x];
-                else tmp[x] = 3 - a[i][x] - a[j][x];
-            }
-            
-            if(M.count(tmp) && M[tmp] < j) {
-                cnt++;
-            }
-        }
-        ans += (cnt * (cnt - 1)) / 2;
-    }
-
-    cout << ans << '\n';
 
     return 0;
 }
