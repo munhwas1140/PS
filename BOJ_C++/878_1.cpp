@@ -4,6 +4,8 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
+ll dark[1000001];
+ll white[1000001];
 void solve() {
     int r, c;
     cin >> r >> c;
@@ -21,10 +23,7 @@ void solve() {
 
     tr = r - 1;
     tc = c - 1;
-    for(int i = 1; tr - i >= 0 && tc - i >= 0; i++) {
-        white += (tr - i) * tc;
-        white += (tc - i) * tr;
-    }
+    
     cout << dark << ' ' << white << '\n';
 }
 int main() {
