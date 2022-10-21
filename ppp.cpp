@@ -4,57 +4,35 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-ll sum[200001];
+const ll mod = 998244353;
+ll n, m;
+ll gcd(ll a, ll b) {
+    if(b == 0) return a;
+    return gcd(b, a % b);
+}
+ll go(int now, ll tar) {
+    if(now == tar + 1) {
+        return 1;
+    }
+
+    ll ret = 0;
+    for(ll i = 1; i <= m; i++) {
+        if(gcd(now, i) == 1) {
+            ret += go(now + 1, tar);
+        } else {
+            ret += pow(m, tar - now);
+        }
+    }
+    return ret;
+}
+void solve() {
+    cin >> n >> m;
+    ll ans = 0;
+    cout << ans << '\n';
+}
 int main() {
+    
     fastio;
-    int n; cin >> n;
-    vector<int> a(n + 1);
-    queue<int> q;
-    ll ans = n;
-    ll pre = 0;
-    for(int i = 1; i <= n; i++) {
-        cin >> a[i];
-        ll t = q.size();
-        if(t >= a[i]) {
-            if(t >= 2) {
-                t -= pre;
-                if(pre > 0) ans += pre * t;
-                if(t >= 2) ans += (t * (t - 1)) / 2;
-            }
-            while(q.size() >= a[i]) {
-                q.pop();
-            }
-            pre = q.size();
-        }
-        q.push(a[i]);
-        
-        sum[i] = ans - (n - i);
-        t = q.size();
-        if(t >= 2) {
-            t -= pre;
-            if(pre > 0) sum[i] += pre * t;
-            sum[i] += (t * (t - 1)) / 2;
-        }
-    }
-
-    ll t = q.size();
-    if(t >= 2) {
-        t -= pre;
-        if(pre > 0) ans += pre * t;
-        ans += (t * (t -1)) / 2;
-    }
-    sum[n] = ans;
-
-    int qq; cin >> qq;
-    while(qq--) {
-        int x, y;
-        cin >> x >> y ;
-        cout << sum[y] - sum[x] << '\n';
-    }
-
-    for(int i = 0; i <= n; i++) {
-        cout << sum[i] << ' ';
-    }
-    cout << '\n';
+    solve();
     return 0;
 }
