@@ -4,6 +4,7 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
+bool noUse[16];
 string a[16];
 int n;
 int b[16][16]; // i -> j 겟수
@@ -16,22 +17,19 @@ int check(int u, int v) {
     for(int i = n1 - 1; i >= 0; i--) {
         int cnt = 0;
         for(int j = 0; j < n2; j++) {
-            if(i + j < n1 && s1[i + j] == s2[j]) cnt++;
-            else break;
+            if(i + j >= n1) break;
+
+            if(s1[i + j] == s2[j]) cnt++;
+            else {
+                cnt = 0;
+                break;
+            }
         }
         ans = max(ans, cnt);
     }
     return ans;
 }
-int overlap(string& s1, string& s2)
-{
-	for (int len = min(s1.size(), s2.size()); len > 0; len--) {
-		if (s1.substr(s1.size() - len) == s2.substr(0, len)) {
-			return len;
-		}
-	}
-	return 0;
-}
+
 int go(int state, int last) {
     if(state == (1 << (n + 1)) - 1) {
         return 0;
@@ -68,37 +66,38 @@ void back(int state, int last) {
 
 void solve() {
     memset(b,0,sizeof(b));
+    memset(noUse,false,sizeof(noUse));
 
     cin >> n;
     for(int i = 1; i <= n; i++) cin >> a[i];
 
-    while (true) {
-        bool removed = false;
-        for (int i = 1; i <= n && !removed; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (i != j && a[i].find(a[j]) != -1) {
-                    a[j] = a[n];
-                    n--;
-                    removed = true;
-                }
-            }
-        }
-        if (!removed) break;
-    }
-
     for(int i = 1; i <= n; i++) {
         for(int j = 1; j <= n; j++) {
             if(i == j) continue;
-            b[i][j] = overlap(a[i], a[j]);
+            if(a[i] == a[j]) {
+                noUse[min(i, j)] = true;
+                continue;
+            }
+
+            int tmp = check(i, j);
+            if(tmp == a[j].size()) {
+                noUse[j] = true;
+            } else {
+                b[i][j] = tmp;
+            }
         }
     }
 
+    int start = 1;
+    for(int i = 1; i <= n; i++) {
+        if(noUse[i]) start |= (1 << i);
+    }
+
     memset(dp,-1,sizeof(dp));
-    back(1, 0);
+    back(start, 0);
     cout << '\n';
     return ;
 }
-
 int main() {
     fastio;
     int tc; cin >> tc;
