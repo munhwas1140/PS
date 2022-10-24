@@ -15,7 +15,7 @@ void solve() {
         else a++;
     }
     if(q > a + 1 || a == 0 && q > 0) cout << "No" << '\n';
-    else cout << "YES" << '\n';
+    else cout << "Yes" << '\n';
 }
 int main() {
     fastio;
