@@ -16,7 +16,7 @@ void solve() {
         w[i] /= 100;
     }
     
-    memset(dp,0,sizeof(dp));
+    memset(dp,0,sizeof(dp));ff
     int ret = 0;
     for(int i = 1; i <= m; i++) {
         int cand = 0;
