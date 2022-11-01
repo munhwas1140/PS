@@ -4,33 +4,32 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-int a[101];
-int dp[101][101];
+bool check[301][301];
+int dp[301][301];
 int go(int x, int y) {
     if(x >= y) return 0;
+
     int &ret = dp[x][y];
     if(ret != -1) return ret;
 
     ret = 0;
-    for(int i = x; i <= y ; i++) {
-        ret = max(ret, go(x, i) + go(i + 1, y));
+    for(int i = x; i <= y; i++) {
+        ret = max(ret, go(x, i) + go(i, y));
     }
-    if(a[x] == y) ret++;
+    if(check[x][y]) ret++;
     return ret;
 }
 int main() {
     fastio;
-
     int n; cin >> n;
     for(int i = 0; i < n; i++) {
         int t1, t2;
         cin >> t1 >> t2;
-        a[t1] = t2;
-        a[t2] = t1;
+        t1 += 100;
+        check[t1-t2][t1 + t2] = true;
     }
 
     memset(dp,-1,sizeof(dp));
-    cout << go(1, 100) << '\n';
-
+    cout << n - go(0, 300) << '\n';
     return 0;
 }

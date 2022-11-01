@@ -10,10 +10,8 @@ void solve() {
     int n = r - l + 1;
     int cnt = 0;
     for(int i = 0; i < 30; i++) {
-        // cout << psum[r][i] << ' ' << psum[l][i] << '\n';
-        cnt = max(cnt, n - psum[r][i] - psum[l][i]);
+        cnt = max(cnt, psum[r][i] - psum[l - 1][i]);
     }
-    // cout << n << ' ' << cnt << '\n';
     cout << n - cnt << '\n';
 }
 int main() {

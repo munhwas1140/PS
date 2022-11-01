@@ -10,19 +10,18 @@ int main() {
     cin >> tc;
     while(tc--) {
         int n; cin >> n;
-        vector<int> psum(n + 1);
-        for(int i = 0, tmp; i < n; i++) {
-            cin >> tmp;
-            psum[i + 1] = psum[i] + tmp; 
-        }
-    
-        int ans = -1e9;
+        vector<int> a(n);
         for(int i = 0; i < n; i++) {
-            for(int j = i; j < n; j++) {
-                ans = max(ans, psum[j+1] - psum[i]);
-            }
+            cin >> a[i];
         }
-        cout << ans << '\n';
+
+        int pSum1 = 0, pSum2 = 0, result = -1e9;
+        for(int i = 0; i < n; i++) {
+            pSum1 += a[i];
+            result = max(pSum1 - pSum2, result);
+            pSum2 = min(pSum2, pSum1);
+        }
+        cout << result << '\n';
     }
     return 0;
 }
