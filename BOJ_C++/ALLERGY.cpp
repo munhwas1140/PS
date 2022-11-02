@@ -5,64 +5,62 @@ using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 int n, m;
-map<string, int> name;
 int best;
-ll check[50];
-ll rSum[51];
-int last(ll now) {
-    int ret = 0;
-    while(now) {
-        ret++;
-        now /= 2;
+map<string, int> name;
+vector<int> eaters[50], canEat[50];
+void init() {
+    name.clear();
+    for(int i = 0; i < 50; i++) {
+        eaters[i].clear();
+        canEat[i].clear();
     }
-    return ret;
 }
-int chk(ll now, int last) {
-
-
-}
-int go(int idx, ll now) {
+void go(vector<int> &edible, int chosen) {
+    if(chosen >= best) return ;
     
-    int a = chk(now, last(now));
-    int next = last(check[idx]);
-
-
-    go(idx + 1, now);
-    go(idx + 1, now | check[idx]);
+    int it = 0;
+    while(it < n && edible[it] > 0) it++;
+    
+    if(it == n) {
+        best = chosen;
+        return ;
+    }
+    
+    for(int i = 0; i < canEat[it].size(); i++) {
+        int food = canEat[it][i];
+        for(int j = 0; j < eaters[food].size(); j++) {
+            edible[eaters[food][j]]++;
+        }
+        go(edible, chosen + 1);
+        for(int j = 0; j < eaters[food].size(); j++) {
+            edible[eaters[food][j]]--;
+        }
+    }
+    return ;
 }
 void solve() {
+    init();
     cin >> n >> m;
     for(int i = 0; i < n; i++) {
         string str; cin >> str;
         name[str] = i;
     }
 
-    memset(check,0,sizeof(check));
     for(int i = 0; i < m; i++) {
         int tmp; cin >> tmp;
         for(int j = 0; j < tmp; j++) {
             string str; cin >> str;
-            check[i] |= 1 << (name[str]);
+            eaters[i].push_back(name[str]);
+            canEat[name[str]].push_back(i);
         }
     }
-    sort(check, check + m, [](ll a, ll b) {
-        return a > b;
-    });
-
-
-    for(int i = n - 1; i >= 0; i--) {
-        rSum[i] = rSum[i + 1] | check[i];
-    }
-
-    best = 1e9;
-    cout << go(0, 0); 
-    cout << (1 << (n)) - 1 << '\n';;
-
     
-
+    best = 1e9;
+    vector<int> edible(n);
+    go(edible, 0);
+    cout << best << '\n';
 }
 int main() {
-    cout << last(2) << '\n';
     fastio;
     int tc; cin >> tc;
     while(tc--) {
