@@ -7,9 +7,7 @@ using pll = pair<ll, ll>;
 
 int main() {
     fastio;
-    int n; cin >> n;
     
-    i
 
     return 0;
 }

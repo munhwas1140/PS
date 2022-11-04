@@ -9,7 +9,7 @@ int go(int turn, int a, int b, int c) {
     if(a == b && b == c && c == 0) return 0;
     int &ret = dp[turn][a][b][c];
     if(ret != -1) return ret;
-    
+    ret = -1e9;
     if(a > 0)
         ret = max(ret, min(turn, a) - go(turn + 1, max(a - turn, 0), b, c));
     if(b > 0)
@@ -24,8 +24,8 @@ int main() {
     int a, b, c;
     cin >> a >> b >> c;
     memset(dp,-1,sizeof(dp));
-    int sum = a + b + c;
     int ans = go(1, a, b, c);
+
 
     if(ans > 0) {
         cout << "F" << '\n';
