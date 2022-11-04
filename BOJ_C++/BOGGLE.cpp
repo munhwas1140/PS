@@ -4,45 +4,51 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
+bool dp[5][5][10];
 int dx[] = {-1,-1,-1,0,0,1,1,1};
 int dy[] = {-1,0,1,-1,1,-1,0,1};
-bool visited[5][5];
-bool go(vector<string> &a, string &str, int x, int y, int idx) {
-    if(a[x][y] != str[idx]) return false;
-    if(idx == str.size() - 1) return true;
-
-    visited[x][y] = true;
-    for(int k = 0; k < 8; k++) {
-        int nx = x + dx[k];
-        int ny = y + dy[k];
-        if(nx < 0 || nx >= 5 || ny < 0 || ny >= 5) continue;
-        if(!visited[nx][ny] && go(a, str, nx, ny, idx + 1)) return true;
+int f(vector<string> &a, string str) {
+    memset(dp,false,sizeof(dp));
+    for(int idx = 0; idx < str.size(); idx++) {
+        for(int i = 0; i < 5; i++) {
+            for(int j = 0; j < 5; j++) {
+                if(a[i][j] == str[idx]) {
+                    if(idx == 0) {
+                        dp[i][j][idx] = true;
+                    } else {
+                        for(int k = 0; k < 8; k++) {
+                            int nx = i + dx[k];
+                            int ny = j + dy[k];
+                            if(nx < 0 || nx >= 5 || ny < 0 || ny >= 5) continue;
+                            if(dp[nx][ny][idx - 1]) {
+                                dp[i][j][idx] = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-    visited[x][y] = false;
-    return false;
+
+    for(int i = 0; i < 5; i++) {
+        for(int j = 0; j < 5; j++) {
+            if(dp[i][j][str.size() - 1]) return 1;
+        }
+    }
+    return 0;
 }
 void solve() {
     vector<string> a(5);
     for(int i = 0; i < 5; i++) {
         cin >> a[i];
     }
-    int n; cin >> n;
-    while(n--) {
+
+    int m; cin >> m;
+    for(int i = 0; i < m; i++) {
         string str; cin >> str;
-        memset(visited,false,sizeof(visited));
-        bool ok = false;
-        for(int i = 0; i < 5; i++) {
-            for(int j = 0; j < 5; j++) {
-                if(go(a, str, i, j, 0)) {
-                    ok = true;
-                    break;
-                }
-            }
-            if(ok) break;
-        }
-        cout << str << ' ';
-        if(ok) cout << "YES" << '\n';
-        else cout << "NO" << '\n';
+        int ans = f(a, str);
+        cout << str << ' ' << (ans ? "YES" : "NO") << '\n';
     }
 }
 int main() {
@@ -51,6 +57,5 @@ int main() {
     while(tc--) {
         solve();
     }
-
     return 0;
 }

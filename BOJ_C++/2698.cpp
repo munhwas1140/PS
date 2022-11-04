@@ -5,11 +5,12 @@ using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 void solve() {
-    
+    int n; cin >> n;
+
+
 }
 int main() {
     fastio;
-    int a[10];
     int tc; cin >> tc;
     while(tc--) {
         solve();
