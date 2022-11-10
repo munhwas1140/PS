@@ -32,100 +32,73 @@ Node *searchParent(Node *T, int searchKey) {
 }
 
 bool insertBST(Node **T, int newKey) {
-    Node **p = T;
-    Node **q = nullptr;
-    stack<Node **> st;
-    while((*p) != nullptr) {
-        if(newKey == (*p)->key) {
+    Node *p = *T;
+    Node *q = nullptr;
+    while(p != nullptr) {
+        if(newKey == p->key) {
             cout << "i " << newKey << " : The key already exists" << '\n';
             return false;
         }
         q = p;
-        st.push(q);
-        if(newKey < (*p)->key) p = &((*p)->l);
-        else p = &((*p)->r);
+        if(newKey < p->key) p = p->l;
+        else p = p->r;
     }
-    Node* node = new Node();
+    Node *node = new Node();
     node->key = newKey;
     if(*T == nullptr) *T = node;
-    else if(newKey < (*q)->key) (*q)->l = node;
-    else (*q)->r = node;
+    else if(newKey < q->key) q->l = node;
+    else q->r = node;
     
-    while(!st.empty()) {
-        q = st.top();
-        st.pop();
-        int lhei = ((*q)->l ? (*q)->l->hei : 0);
-        int rhei = ((*q)->r ? (*q)->r->hei : 0);
-        (*q)->hei = 1 + max(lhei, rhei);
-    }
     return true;
 }
-Node *getNode() {
+Node *getAVLNode() {
     return new Node();
 }
 tuple<string ,Node *, Node *> checkBalance(Node **T, int newKey) {
-    Node *f = nullptr;
-    Node *a = *T;
+    stack<Node *> st;
     Node *p = *T;
     Node *q = nullptr;
+    Node *x = nullptr;
+    Node *f = nullptr;
 
-    while(p != nullptr) { //newKey 삽입 위치 q찾음
-        if(p->bf != 0) {
-            a = p;
-            f = q;
-        }
+    while(true) {
+        if(newKey == p->key) break;
+        st.push(p);
+        if(newKey < p->key) p = p->l;
+        else p = p->r;
+    }
+    st.push(p);
+    while(!st.empty()) {
+        q = st.top();
+        st.pop();
 
-        if(newKey < p->key) {
-            q = p;
-            p = p->l;
-        } else if(newKey > p->key) {
-            q = p;
-            p = p->r;
-        } else {
-            q = p;
-            break;
+        int lhei = (q->l ? q->l->hei : 0);
+        int rhei = (q->r ? q->r->hei : 0);
+        q->hei = 1 + max(lhei, rhei);
+        q->bf = lhei - rhei;
+
+        if(1 < q->bf || q->bf < -1) {
+            if(x == nullptr) {
+                x = q;
+                if(!st.empty()) f = st.top();
+            }
         }
     }
 
-    // calc BF
-    Node *b;
-    int d;
-    if(newKey < a->key) {
-        p = a->r;
-        b = p;
-        d = -1;
+    if(x == nullptr) {
+        return make_tuple("NO", nullptr, nullptr);
+    }
+
+    string rotateType;
+    if(1 < x->bf) {
+        if(x->l && x->l->bf < 0) rotateType = "LR";
+        else rotateType = "LL";
     } else {
-        p = a->l;
-        b = p;
-        d = -1;
+        if(x->r && x->r->bf > 0) rotateType = "RL";
+        else rotateType = "RR";
     }
 
-    while(p != q) {
-        if(newKey < p->key) {
-            p->bf = 1;
-            p = p->l;
-        } else {
-            p->bf = -1;
-            p = p->r;
-        }
-    }
-
-    // balanced check
-    bool unbalanced = true;
-    if(a->bf != 0 || a->bf + d != 0) {
-        a->bf = a->bf + d;
-        unbalanced = false;
-    }
-
-    string rotateType = "NO";
-
-    if(unbalanced) {
-        if(d == 1) {
-            if(b->bf == 1) rotateType = "LL";
-            else rotateType = "LR";
-        }
-    }
-    return ;
+    return make_tuple(rotateType, x, f);
 }
 
 int height(Node *p) {
@@ -151,7 +124,7 @@ int noNodes(Node *p) {
     return ret;
 }
 void deleteBST(Node **T, int deleteKey) {
-    Node *p =searchBST(root, deleteKey);
+    Node *p = searchBST(root, deleteKey);
     Node *q = searchParent(root, deleteKey);
 
     if(p == root) { //루트를 제거해야 할 경우
@@ -168,7 +141,6 @@ void deleteBST(Node **T, int deleteKey) {
             *T = r;
         } else if(p->l == nullptr && p->r == nullptr) {
             *T = nullptr;
-            return ;
         } else {
             if(p->l) *T = (*T)->l;
             else *T = (*T)->r;
@@ -199,7 +171,6 @@ void deleteBST(Node **T, int deleteKey) {
         }
         
         Node *rq = searchParent(root, r->key);
-        //재귀처리보다 그냥 노드r로 바로 대체
         if(flag == false) {
             rq->r = r->l;
             r->l = p->l;
@@ -224,30 +195,139 @@ void deleteBST(Node **T, int deleteKey) {
     }
     return ;
 }
-bool insertAVL(Node **T, int  newKey) {
-    if(*T == nullptr) {
-        Node *y = getNode();
-        y->key = newKey;
-        y->l = nullptr;
-        y->r = nullptr;
-        y->bf = 0;
-        *T = y;
-        return true;
+void updatehei(Node *node) {
+    if(!node) return;
+    updatehei(node->l);
+    updatehei(node->r);
+
+    int lhei = (node->l ? node->l->hei : 0);
+    int rhei = (node->r ? node->r->hei : 0);
+    node->hei = max(lhei, rhei) + 1;
+    node->bf = lhei - rhei;
+}
+void rotateTree(Node **T, string rotateType, Node *p, Node *q) {
+    Node *a, *b, *c;
+    if(rotateType == "LL") {
+        a = p;
+        b = p->l;
+        a->l = b->r;
+        b->r = a;
+        a->bf = 0;
+        b->bf = 0;
+    } else if(rotateType == "LR") {
+        a = p;
+        b = p->l;
+        c = b->r;
+        b->r = c->l;
+        a->l = c->r;
+        c->l = b;
+        c->r = a;
+        // switch(c->bf) {
+        //     case 0:
+        //         b->bf = 0; a->bf = 0;
+        //         break;
+        //     case 1:
+        //         a->bf = -1; b->bf = 0;
+        //         break;
+        //     case -1:
+        //         b->bf = 1; a->bf = 0;
+        //         break;
+        // }
+        // c->bf k= 0;
+        b = c;
+    } else if(rotateType == "RR") {
+        a = p;
+        b = p->r;
+        a->r = b->l;
+        b->l = a;
+        a->bf = 0;
+        b->bf = 0;
+    } else {
+        a = p;
+        b = p->r;
+        c = b->l;
+        b->l = c->r;
+        a->r = c->l;
+        c->r = b;
+        c->l = a;
+        // switch(c->bf) {
+        //     case 0:
+        //         b->bf = 0; a->bf = 0;
+        //         break;
+        //     case -1:
+        //         a->bf = 1; b->bf = 0;
+        //         break;
+        //     case 1:
+        //         b->bf = -1; a->bf = 0;
+        //         break;
+        // }
+        // c->bf = 0;
+        b = c;
     }
-
-    bool found = insertBST(T, newKey);
-    if(found) return false;
-
+    
+    updatehei(b);
+    if(q == nullptr) *T = b;
+    else {
+        if(p == q->l) q->l = b;
+        else q->r = b;
+        updatehei(q);
+    }
 }
-void inorderBST(Node *T) {
-    if(T == nullptr) return;
-    inorderBST(T->l);
-    cout << T->key << ' ';
-    inorderBST(T->r);
+bool insertAVL(Node **T, int newKey) {
+    if(!insertBST(T, newKey)) return false;
+
+    auto [rotateType, p, q] = checkBalance(T, newKey);
+
+    cout << rotateType << ' ';
+    if(rotateType == "NO") return true;
+    else {
+        rotateTree(T,rotateType, p, q);
+    }
+    return true;
 }
+void deleteAVL(Node **T, int deleteKey) {
+    deleteBST(T, deleteKey);
+
+    // auto [rotateType, p, q] = checkBalance(T, tar->key);
+    // cout << rotateType << ' ';
+    // if(rotateType != "NO") {
+    //     rotateTree(T, rotateType, p, q);
+    // }
+}
+void inOrderBST(Node *node) {
+    if(node == nullptr) return ;
+    inOrderBST(node->l);
+    cout << "(" << node->key << ", " << node->bf << ") ";
+    inOrderBST(node->r);
+}
+// void preOrderBST(Node* node) {
+//     if(node == nullptr) return;
+//     cout << "(" << node->key << ", " << node->bf << ") ";
+//     preOrderBST(node->l);
+//     preOrderBST(node->r);
+// }
 int main() {
     fastio;
-
-
+    char q;
+    ifstream fin("algo/AVL-input.txt");
+    while(fin >> q) {
+        int key;
+        if(q == 'i') {
+            fin >> key;
+            insertAVL(&root, key);
+            inOrderBST(root);
+            cout << '\n';
+        } else if(q == 'd') {
+            fin >> key;
+            Node *p = searchBST(root, key);
+            if(p == nullptr) {
+                cout << "d " << key << " : The key does not exist\n"; //key를 찾을 수 없을경우 처리
+            } else {
+                deleteAVL(&root, key);
+            }
+            inOrderBST(root);
+            cout << '\n';
+        }
+    }
     return 0;
 }

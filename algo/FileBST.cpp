@@ -85,7 +85,7 @@ int noNodes(Node *p) {
     return ret;
 }
 void deleteBST(Node **T, int deleteKey) {
-    Node *p =searchBST(root, deleteKey);
+    Node *p = searchBST(root, deleteKey);
     Node *q = searchParent(root, deleteKey);
 
     if(p == root) { //루트를 제거해야 할 경우
@@ -102,7 +102,6 @@ void deleteBST(Node **T, int deleteKey) {
             *T = r;
         } else if(p->l == nullptr && p->r == nullptr) {
             *T = nullptr;
-            return ;
         } else {
             if(p->l) *T = (*T)->l;
             else *T = (*T)->r;
