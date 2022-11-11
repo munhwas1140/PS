@@ -1,3 +1,7 @@
+// 1. 삽입 : 성공
+// 2. 삭제 : 실패
+// g++ -std=c++17 환경
+// main함수의 File input 위치를 재설정 해주어야합니다.
 #include <bits/stdc++.h>
 using namespace std;
 #define fastio cin.tie(0)->sync_with_stdio(0)
@@ -54,7 +58,7 @@ bool insertBST(Node **T, int newKey) {
 Node *getAVLNode() {
     return new Node();
 }
-tuple<string ,Node *, Node *> checkBalance(Node **T, int newKey) {
+tuple<string ,Node *, Node *> checkBalance(Node **T, int Key) {
     stack<Node *> st;
     Node *p = *T;
     Node *q = nullptr;
@@ -62,12 +66,15 @@ tuple<string ,Node *, Node *> checkBalance(Node **T, int newKey) {
     Node *f = nullptr;
 
     while(true) {
-        if(newKey == p->key) break;
+        if(Key == p->key) break;
         st.push(p);
-        if(newKey < p->key) p = p->l;
+        if(Key < p->key) p = p->l;
         else p = p->r;
-    }
+    } // Key값의 노드를 찾아가면서 경로의 노드를 스택에 넣는다.
     st.push(p);
+
+    //밸런스체크 이전에 노드를 삽입하거나 삭제하였으므로
+    //삽입,삭제노드로부터 루트로 올라가며 노드의 높이와 bf를 갱신
     while(!st.empty()) {
         q = st.top();
         st.pop();
@@ -77,7 +84,7 @@ tuple<string ,Node *, Node *> checkBalance(Node **T, int newKey) {
         q->hei = 1 + max(lhei, rhei);
         q->bf = lhei - rhei;
 
-        if(1 < q->bf || q->bf < -1) {
+        if(1 < q->bf || q->bf < -1) { // 스택에서 노드를 꺼내오므로 가장 아래쪽의 불균형 노드
             if(x == nullptr) {
                 x = q;
                 if(!st.empty()) f = st.top();
@@ -85,7 +92,7 @@ tuple<string ,Node *, Node *> checkBalance(Node **T, int newKey) {
         }
     }
 
-    if(x == nullptr) {
+    if(x == nullptr) { //불균형 노드가 없는경우 "NO"와 널포인터를 리턴
         return make_tuple("NO", nullptr, nullptr);
     }
 
@@ -207,14 +214,14 @@ void updatehei(Node *node) {
 }
 void rotateTree(Node **T, string rotateType, Node *p, Node *q) {
     Node *a, *b, *c;
-    if(rotateType == "LL") {
+    if(rotateType == "LL") { // LL rotation
         a = p;
         b = p->l;
         a->l = b->r;
         b->r = a;
         a->bf = 0;
         b->bf = 0;
-    } else if(rotateType == "LR") {
+    } else if(rotateType == "LR") { // LR rotation
         a = p;
         b = p->l;
         c = b->r;
@@ -222,27 +229,15 @@ void rotateTree(Node **T, string rotateType, Node *p, Node *q) {
         a->l = c->r;
         c->l = b;
         c->r = a;
-        // switch(c->bf) {
-        //     case 0:
-        //         b->bf = 0; a->bf = 0;
-        //         break;
-        //     case 1:
-        //         a->bf = -1; b->bf = 0;
-        //         break;
-        //     case -1:
-        //         b->bf = 1; a->bf = 0;
-        //         break;
-        // }
-        // c->bf k= 0;
         b = c;
-    } else if(rotateType == "RR") {
+    } else if(rotateType == "RR") { // RR rotation
         a = p;
         b = p->r;
         a->r = b->l;
         b->l = a;
         a->bf = 0;
         b->bf = 0;
-    } else {
+    } else { // RL rotation
         a = p;
         b = p->r;
         c = b->l;
@@ -250,18 +245,6 @@ void rotateTree(Node **T, string rotateType, Node *p, Node *q) {
         a->r = c->l;
         c->r = b;
         c->l = a;
-        // switch(c->bf) {
-        //     case 0:
-        //         b->bf = 0; a->bf = 0;
-        //         break;
-        //     case -1:
-        //         a->bf = 1; b->bf = 0;
-        //         break;
-        //     case 1:
-        //         b->bf = -1; a->bf = 0;
-        //         break;
-        // }
-        // c->bf = 0;
         b = c;
     }
     
@@ -274,15 +257,16 @@ void rotateTree(Node **T, string rotateType, Node *p, Node *q) {
     }
 }
 bool insertAVL(Node **T, int newKey) {
-    if(!insertBST(T, newKey)) return false;
+    if(!insertBST(T, newKey)) return false; //newKey값이 이미 트리에 있다면 key already exists출력 후 false리턴
 
-    auto [rotateType, p, q] = checkBalance(T, newKey);
+    auto [rotateType, p, q] = checkBalance(T, newKey); //balance check
+    // p는 bf가 -1 보다 작거나 1보다 큰 노드, q는 p노드의 부모노드.
+    // 그러한 노드가 없다면 rotateType == "NO", 그러한 노드가 있다면 상황에 맞는 로테이션 타입을 반환함.
 
-    cout << rotateType << ' ';
-    if(rotateType == "NO") return true;
-    else {
-        rotateTree(T,rotateType, p, q);
-    }
+    cout << rotateType << ' '; //rotateType을 출력
+    if(rotateType == "NO") return true; //회전시키지 않아도 되는경우 바로 true반환
+    
+    rotateTree(T,rotateType, p, q); // 트리를 회전시키는 부분
     return true;
 }
 void deleteAVL(Node **T, int deleteKey) {
@@ -300,16 +284,11 @@ void inOrderBST(Node *node) {
     cout << "(" << node->key << ", " << node->bf << ") ";
     inOrderBST(node->r);
 }
-// void preOrderBST(Node* node) {
-//     if(node == nullptr) return;
-//     cout << "(" << node->key << ", " << node->bf << ") ";
-//     preOrderBST(node->l);
-//     preOrderBST(node->r);
-// }
 int main() {
     fastio;
     char q;
     ifstream fin("algo/AVL-input.txt");
+
     while(fin >> q) {
         int key;
         if(q == 'i') {
