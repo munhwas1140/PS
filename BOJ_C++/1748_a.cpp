@@ -5,7 +5,8 @@ using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 void solve() {
-    
+    int n; cin >> n;
+    cout << (int)ceil(n / 2.0) << '\n';
 }
 int main() {
     fastio;
