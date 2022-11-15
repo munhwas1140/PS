@@ -30,7 +30,7 @@ void solve() {
     for(int i = it; i < n; i++) {
         if(a[i] == 0) {
             int mcnt = 1;
-            map<int,int> mp;
+            map<ll,int> mp;
             mp[p[i]] = 1;
             i++;
             while(i < n) {
