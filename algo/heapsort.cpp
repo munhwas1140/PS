@@ -4,87 +4,63 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-int Heap[2020], sz, cnt;
-
-void heapInsert(int v) {
-    Heap[++sz] = v;
-    int idx = sz;
-    while(idx != 1 && v > Heap[idx / 2]) {
-        int tmp = Heap[idx];
-        Heap[idx] = Heap[idx / 2];
-        Heap[idx / 2] = tmp;
-        idx /= 2;
-    }
-}
-
-void makeHeap(int *a, int n) {
-    for(int i = 1; i <= n; i++) {
-        heapInsert(a[i]);
-    }
-}
-
-int heapTop() {
-    int ret = Heap[1];
-    Heap[1] = Heap[sz];
-    Heap[sz] = -1e9;
-    sz--;
-
-    int p = 1;
-    while(true) {
-        int child = p * 2;
-        if(child + 1 <= sz) {
+int cnt;
+int a[1001];
+void fixHeap(int node, int key, int sz) {
+    
+    
+    int now = node;
+    while(now <= sz) {
+        if(now * 2 + 1 <= sz) {
             cnt += 2;
-            if(Heap[child + 1] > Heap[child]) {
-                child++;
+            int lc = now * 2;
+            int rc = now * 2 + 1;
+            if(a[lc] > a[rc]) {
+                if(a[lc] > a[now]) {
+                    int tmp = a[now];
+                    a[now] = a[lc];
+                    a[lc] = tmp;
+                    now = lc;
+                } else break;
+            } else {
+                if(a[rc] > a[now]) {
+                    int tmp = a[now];
+                    a[now] = a[rc];
+                    a[rc] = tmp;
+                    now = rc;
+                } else break;
             }
-            if(Heap[child] < Heap[p]) break;
-        } else if(child <= sz) {
+        } else if(now * 2 <= sz) {
+            int lc = now * 2;
             cnt++;
-            if(Heap[child] < Heap[p]) break;
-        } else {
-            break;
-        }
-        
-        
-        int tmp = Heap[child];
-        Heap[child] = Heap[p];
-        Heap[p] = tmp;
-        p = child;
+            if(a[lc] > a[now]) {
+                int tmp = a[now];
+                a[now] = a[lc];
+                a[lc] = tmp;
+                now = lc;
+            } else break;
+        } else break;
     }
-    return ret;
 }
-
-void heapSort(int *a, int n) {
-    makeHeap(a, n);
-    for(int i = n; i >= 1; i--) {
-        a[i] = heapTop();
+void heapSort(int n) {
+    for(int i = n / 2; i >= 1; i--) {
+        fixHeap(i, a[i], n);
     }
-    return ;
-}
-
-void init() {
-    for(int i = 0; i < 2020; i++) {
-        Heap[i] = -1e9;
+    for(int heapsize = n; heapsize >= 2; heapsize--) {
+        int Max = a[1];
+        a[1] = a[heapsize];
+        fixHeap(1,a[heapsize], heapsize - 1);
+        a[heapsize] = Max;
     }
-    sz = 0;
-    cnt = 0;
 }
-
 void solve() {
-    init();
-    int n, a[1001] = {0, };
-
-    cin >> n;
+    for(int i = 0; i < 1001; i++) a[i] = -1;
+    cnt = 0;
+    int n; cin >> n;
     for(int i = 1; i <= n; i++) cin >> a[i];
-    heapSort(a, n);
-
-    // for(int i = 1; i <= n; i++) {
-    //     cout << a[i] << ' ';
-    // }
-    // cout << '\n';
+    heapSort(n);
     cout << cnt << '\n';
 }
-
 int main() {
     fastio;
     int tc; cin >> tc;

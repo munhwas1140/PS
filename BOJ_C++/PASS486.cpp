@@ -59,7 +59,6 @@ int main() {
     fastio;
     int tc; cin >> tc;
 
-
     init();
     getFactorsSmart();
     while(tc--) {
