@@ -31,6 +31,8 @@ void solve() {
 
 int main() {
     fastio;
+
+    
     memset(dp,-1,sizeof(dp));
     int tc; cin >> tc;
     while(tc--) {
