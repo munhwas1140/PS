@@ -6,7 +6,7 @@ using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 int n, ans;
 int a[200001];
-void go(int now, int h, int g, int b) {
+void go(int now, ll h, int g, int b) {
     ans = max(ans, now);
     if(now >= n) return ;
 
