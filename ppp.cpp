@@ -12,17 +12,20 @@ void solve() {
     }
     
 
-    for(ll e = n + 2; e < n + 30; e++) {
-        ll x = (e - 1) * (e - 1);
-        ll b = (e * (e + 1)) / 2;
-        ll a = ((e - n) * (e - n + 1)) / 2;
-        
-        cout << b - a<< ' ' << n * n << '\n';
-        if(n + 3 + e <= x && x <= b - a + 1) {
+    
+    for(ll s = 1; ;s++) {
+
+        for(ll e = s + n - 1; ;e++) {
+            ll b = (e * (e + 1)) / 2;
+            ll a = ((e - n + 1) * (e - n + 2)) / 2;
+            ll x = b - a + s;
+            ll sq = (e - s) * (e - s);
+            if(x >= sq) {
+
+            }
 
         }
     }
-    
 
 }
 int main() {
