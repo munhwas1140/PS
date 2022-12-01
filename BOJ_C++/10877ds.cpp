@@ -29,12 +29,16 @@ pii qnd(int now) {
         return {1, 3};
     } else return {0, 2};
 }
-bool go(int x, int y, int dir, vector<string> &a, vector<vector<bool>> &visited, vector<vector<bool>> &tar) {
+int cnt;
+int tmp;
+bool go(int x, int y, int dir, vector<string> &a, vector<vector<bool>> &visited) {
     visited[x][y] = true;
+    tmp++;
     if(x == point[1].first && y == point[1].second) {
         dist[x][y] = (dir + 2) % 4;
-        if(visited == tar) return true;
+        if(tmp == cnt) return true;
         dist[x][y] = -1;
+        tmp--;
         visited[x][y] = false;
         return false;
     }
@@ -45,7 +49,7 @@ bool go(int x, int y, int dir, vector<string> &a, vector<vector<bool>> &visited,
             int ny = y + dy[i];
             if(nx >= 0 && nx < n && ny >= 0 && ny < m && !visited[nx][ny] && a[nx][ny] != '*') {
                 dist[x][y] = i;
-                if(go(nx,ny,i,a,visited,tar)) {
+                if(go(nx,ny,i,a,visited)) {
                     return true;
                 }
             }
@@ -55,7 +59,7 @@ bool go(int x, int y, int dir, vector<string> &a, vector<vector<bool>> &visited,
         int ny = y + dy[dir];
         dist[x][y] = dir;
         if(nx >= 0 && nx < n && ny >= 0 && ny < m && !visited[nx][ny] && a[nx][ny] != '*') {
-            if(go(nx, ny, dir, a,visited,tar)) return true;
+            if(go(nx, ny, dir, a,visited)) return true;
         }
     } else if(a[x][y] == 'q') {
         auto [nd1, nd2] = qnd(dir);
@@ -64,31 +68,31 @@ bool go(int x, int y, int dir, vector<string> &a, vector<vector<bool>> &visited,
         int ny = y + dy[nd1];
         if(nx >= 0 && nx < n && ny >= 0 && ny < m && !visited[nx][ny] && a[nx][ny] != '*') {
             dist[x][y] = nd1;
-            if(go(nx, ny, nd1, a, visited, tar)) return true;
+            if(go(nx, ny, nd1, a, visited)) return true;
         }
 
         nx = x + dx[nd2];
         ny = y + dy[nd2];
         if(nx >= 0 && nx < n && ny >= 0 && ny < m && !visited[nx][ny] && a[nx][ny] != '*') {
             dist[x][y] = nd2;
-            if(go(nx,ny,nd2,a,visited,tar)) return true;
+            if(go(nx,ny,nd2,a,visited)) return true;
         }
     }
 
     visited[x][y] = false;
+    tmp--;
     return false;
 } 
 void solve() {
     cin >> n >> m;
-
+    cnt = 0;
     point.clear();
     vector<string> a(n);
-    vector<vector<bool>> tar(n, vector<bool>(m, false));
     for(int i = 0; i < n; i++) {
         cin >> a[i];
         for(int j = 0; j < m; j++) {
             if(a[i][j] != '*') {
-                tar[i][j] = true;
+                cnt++;
             }
             if(a[i][j] == 'O') {
                 if(point.size() == 0) {
@@ -103,7 +107,8 @@ void solve() {
 
     memset(dist,-1,sizeof(dist));
     vector<vector<bool>> visited(n, vector<bool>(m, false));
-    bool ok = go(point[0].first, point[0].second, -1, a, visited, tar);
+    tmp = 0;
+    bool ok = go(point[0].first, point[0].second, -1, a, visited);
     
     if(!ok) cout << "NO" << '\n';
     else {
@@ -132,7 +137,7 @@ void solve() {
                 } else if(a[i][j] == 'l') {
                     if(dist[i][j] == 0 || dist[i][j] == 2) {
                         ans[i][j] = '-';
-                    } else ans[i][j] = '|';
+                    } else ans[i][j] = 'l';
                 } else if(a[i][j] == '*') {
                     ans[i][j] = '*';
                 }
