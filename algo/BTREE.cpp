@@ -141,12 +141,162 @@ void inorderBT(Node *T, int m) {
     }
 }
 
+void deleteKey(Node *T, int m, Node *x, int oldKey) {
+    int i = 1;
+    while(oldKey > x->K[i]) i++;
+    while(i <= x->n) {
+        x->K[i] = x->K[i + 1];
+        x->P[i] = x->P[i + 1];
+        i++;
+    }
+    x->n--;
+}
+int bestSibling(Node *T, int m, Node *x, Node *y) {
+    int i = 0;
+    while(y->P[i] != x) i++;
+    
+    int ret;
+    if(i == 0) ret = i + 1;
+    else if(i == y->n) ret = i - 1;
+    else if(y->P[i - 1]->n >= y->P[i + 1]->n) ret = i - 1;
+    else ret = i + 1;
+    return ret;
+}
+
+void redistributeKey(Node *T, int m, Node *x, Node *y, int bestSibling) {
+    int i = 0;
+    while(y->P[i] != x) i++;
+
+    Node *bestNode = y->P[bestSibling];
+    if(bestSibling < i) {
+        int lastKey = bestNode->K[bestNode->n];
+        insertKey(T, m, x, nullptr, y->K[i]);
+        x->P[1] = x->P[0];
+        x->P[0] = bestNode->P[bestNode->n];
+        bestNode->P[bestNode->n] = nullptr;
+        deleteKey(T, m, bestNode, lastKey);
+        y->K[i] = lastKey;
+    } else {
+        int firstKey = bestNode->K[1];
+        insertKey(T, m, x, nullptr, y->K[i + 1]);
+        x->P[x->n] = bestNode->P[0];
+        bestNode->P[0] = bestNode->P[1];
+        deleteKey(T, m, bestNode, firstKey);
+        y->K[i + 1] = firstKey;
+    }
+}
+void mergeNode(Node *T, int m, Node *x, Node *y, int bestSibling) {
+    int i = 0;
+    while(y->P[i] != x) i++;
+
+    Node *bestNode = y->P[bestSibling];
+    if(bestSibling > i) {
+        swap(bestSibling, i);
+        swap(bestNode, x);
+    }
+
+    bestNode->K[bestNode->n + 1] = y->K[i];
+    bestNode->n++;
+
+    int j = 1;
+    while(j <= x->n) {
+        bestNode->K[bestNode->n + 1] = x->K[j];
+        bestNode->P[bestNode->n] = x->P[j - 1];
+        bestNode->n++;
+        j++;
+    }
+
+    bestNode->P[bestNode->n] = x->P[x->n];
+    deleteKey(T, m, y, y->K[i]);
+    delete x;
+}
+bool isRoot(Node *x) {
+    if(x == root) return true;
+    return false;
+}
+bool isTerminalNode(Node *x) {
+    for(int i = 0; i <= x->n; i++) {
+        if(x->P[i]) return false;
+    }
+    return true;
+}
+void deleteBT(Node **T, int m, int oldKey) {
+    stack<Node *> st;
+    auto [found, stack] = searchPath(*T, m, oldKey, st);
+    if(!found) {
+        cout << "d " << oldKey << " : The key does not exist" << '\n';
+        return ;
+    }
+
+    Node *x = stack.top();
+    stack.pop();
+    Node *y = nullptr;
+
+    // if(!isTerminalNode(x)) { //내부노드에서발견
+    //     Node *internalNode = x;
+    //     int i = 0;
+    //     for(int j = 1; j <= internalNode->n; j++) {
+    //         if(oldKey == internalNode->K[j]) {
+    //             i = j;
+    //             break;
+    //         }
+    //     }
+
+    //     stack.push(x);
+
+    //     auto [found2, stack2] = searchPath(x->P[i], m, x->K[i], stack);
+    //     int tmp = internalNode->K[i];
+    //     internalNode->K[i] = x->K[1];
+    //     x->K[1] = tmp;
+    //     stack = stack2;
+    // }
+
+
+    bool finished = false;
+    deleteKey(*T, m, x, oldKey);
+    if(!stack.empty()) {
+        y = stack.top();
+        stack.pop();
+    }
+
+    do {
+        if(isRoot(x) || x->n >= int(ceil(m / 2)) - 1) {
+            finished = true;
+        } else {
+            int BS = bestSibling(*T, m, x, y);
+
+            if(y->P[BS]->n > int(ceil(m / 2)) - 1) {
+                redistributeKey(*T, m, x, y, BS);
+                finished = true;
+            } else {
+                mergeNode(*T, m, x, y, BS);
+                x = y;
+                if(!stack.empty()) {
+                    y = stack.top();
+                    stack.pop();
+                } else finished = true;
+            }
+        }
+    } while(!finished);
+
+    if(y != nullptr && y->n == 0) {
+        *T = y->P[0];
+        delete y;
+    }
+
+
+}
 int main() {
     
     while(true) {
         char q; int key;
         cin >> q >> key;
-        insertBT(&root, 3, key);
+
+        if(q == 'i') {
+            insertBT(&root, 3, key);
+        } else {
+            deleteBT(&root, 3, key);
+        }
         inorderBT(root, 3);
         cout << '\n';
     }
