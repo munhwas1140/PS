@@ -1,3 +1,7 @@
+// 1. 삽입 : 성공
+// 2. 삭제 : 실패
+// g++ -std=c++17 환경
+// main함수의 File input 위치를 재설정 해주어야합니다.
 #include <bits/stdc++.h>
 using namespace std;
 struct Node {
@@ -18,6 +22,7 @@ Node* getNode() {
 }
 
 pair<bool, stack<Node *>> searchPath(Node *T, int m, int key, stack<Node *> st) {
+    // key값이 들어있는 노드를 찾는다.
     Node *x = T;
     int i;
     do {
@@ -34,6 +39,7 @@ pair<bool, stack<Node *>> searchPath(Node *T, int m, int key, stack<Node *> st) 
 }
 
 void insertKey(Node *T, int m, Node *x, Node *y, int newKey) {
+    //노드 x에서 newKey가 들어갈 위치를 찾고 나머지 Key, 포인터는 오른쪽으로 밀어준다.
     int i = x->n;
     while(i >= 1 && newKey < x->K[i]) {
         x->K[i + 1] = x->K[i];
@@ -156,9 +162,9 @@ int bestSibling(Node *T, int m, Node *x, Node *y) {
     while(y->P[i] != x) i++;
     
     int ret;
-    if(i == 0) ret = i + 1;
-    else if(i == y->n) ret = i - 1;
-    else if(y->P[i - 1]->n >= y->P[i + 1]->n) ret = i - 1;
+    if(i == 0) ret = i + 1; // 왼쪽형제노드가 없는경우
+    else if(i == y->n) ret = i - 1; // 오른쪽 형제 노드가 없는경우
+    else if(y->P[i - 1]->n >= y->P[i + 1]->n) ret = i - 1; // 왼쪽, 오른쪽형제노드중 크기가 큰 형제노드 찾기
     else ret = i + 1;
     return ret;
 }
@@ -185,17 +191,17 @@ void redistributeKey(Node *T, int m, Node *x, Node *y, int bestSibling) {
         y->K[i + 1] = firstKey;
     }
 }
-void mergeNode(Node *T, int m, Node *x, Node *y, int bestSibling) {
+void mergeNode(Node *T, int m, Node *x, Node **y, int bestSibling) {
     int i = 0;
-    while(y->P[i] != x) i++;
+    while((*y)->P[i] != x) i++;
 
-    Node *bestNode = y->P[bestSibling];
+    Node *bestNode = (*y)->P[bestSibling];
     if(bestSibling > i) {
         swap(bestSibling, i);
         swap(bestNode, x);
     }
 
-    bestNode->K[bestNode->n + 1] = y->K[i];
+    bestNode->K[bestNode->n + 1] = (*y)->K[i];
     bestNode->n++;
 
     int j = 1;
@@ -207,12 +213,9 @@ void mergeNode(Node *T, int m, Node *x, Node *y, int bestSibling) {
     }
 
     bestNode->P[bestNode->n] = x->P[x->n];
-    deleteKey(T, m, y, y->K[i]);
+    deleteKey(T, m, *y, (*y)->K[i]);
+    *y = bestNode;
     delete x;
-}
-bool isRoot(Node *x) {
-    if(x == root) return true;
-    return false;
 }
 bool isTerminalNode(Node *x) {
     for(int i = 0; i <= x->n; i++) {
@@ -232,24 +235,25 @@ void deleteBT(Node **T, int m, int oldKey) {
     stack.pop();
     Node *y = nullptr;
 
-    // if(!isTerminalNode(x)) { //내부노드에서발견
-    //     Node *internalNode = x;
-    //     int i = 0;
-    //     for(int j = 1; j <= internalNode->n; j++) {
-    //         if(oldKey == internalNode->K[j]) {
-    //             i = j;
-    //             break;
-    //         }
-    //     }
+    if(!isTerminalNode(x)) { //내부노드에서발견
+        Node *internalNode = x;
+        int i = 0;
+        for(int j = 1; j <= internalNode->n; j++) {
+            if(oldKey == internalNode->K[j]) {
+                i = j;
+                break;
+            }
+        }
 
-    //     stack.push(x);
+        stack.push(x);
 
-    //     auto [found2, stack2] = searchPath(x->P[i], m, x->K[i], stack);
-    //     int tmp = internalNode->K[i];
-    //     internalNode->K[i] = x->K[1];
-    //     x->K[1] = tmp;
-    //     stack = stack2;
-    // }
+        auto [found2, stack2] = searchPath(x->P[i], m, internalNode->K[i], stack);
+        x = stack2.top();
+        int tmp = internalNode->K[i];
+        internalNode->K[i] = x->K[1];
+        x->K[1] = tmp;
+        stack = stack2;
+    }
 
 
     bool finished = false;
@@ -260,16 +264,16 @@ void deleteBT(Node **T, int m, int oldKey) {
     }
 
     do {
-        if(isRoot(x) || x->n >= int(ceil(m / 2)) - 1) {
+        if(y == nullptr || x->n >= int(ceil(m / 2)) - 1) {
             finished = true;
         } else {
             int BS = bestSibling(*T, m, x, y);
 
-            if(y->P[BS]->n > int(ceil(m / 2)) - 1) {
+            if(y->P[BS]->n > int(ceil(m / 2)) - 1) { // Bestsibling노드의 key수가 최소보다 큰 경우
                 redistributeKey(*T, m, x, y, BS);
                 finished = true;
             } else {
-                mergeNode(*T, m, x, y, BS);
+                mergeNode(*T, m, x, &y, BS);
                 x = y;
                 if(!stack.empty()) {
                     y = stack.top();
@@ -283,23 +287,39 @@ void deleteBT(Node **T, int m, int oldKey) {
         *T = y->P[0];
         delete y;
     }
-
-
 }
+
 int main() {
-    
-    while(true) {
-        char q; int key;
-        cin >> q >> key;
+
+    char q;
+    int key;
+    ifstream fin("algo/BT-input.txt");
+
+    while(fin >> q) {
+        fin >> key;
 
         if(q == 'i') {
             insertBT(&root, 3, key);
+            inorderBT(root, 3);
+            cout << '\n';
         } else {
-            deleteBT(&root, 3, key);
+            // deleteBT(&root, 3, key);
         }
-        inorderBT(root, 3);
-        cout << '\n';
     }
-    
+
+    ifstream fin2("algo/BT-input.txt");
+    root = new Node();
+    while(fin2 >> q) {
+        fin2 >> key;
+
+        if(q == 'i') {
+            insertBT(&root, 4, key);
+            inorderBT(root, 4);
+            cout << '\n';
+        } else {
+            // deleteBT(&root, 3, key);
+        }
+    }
+
     return 0;
 }
