@@ -4,9 +4,9 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-vector<int> makeFail(string &s) {
+int* makeFail(string &s) {
     int n = s.size();
-    vector<int> ret(n);
+    int *ret = new int[n];
     for(int i = 1, j = 0; i < n; i++) {
         while(j > 0 && s[i] != s[j]) j = ret[j - 1];
         if(s[i] == s[j]) ret[i] = ++j;
@@ -14,11 +14,10 @@ vector<int> makeFail(string &s) {
     return ret;
 }
 int KMP(string &s, string &w) {
-    vector<int> fail = makeFail(s);
+    int *fail = makeFail(s);
     int ans = 0;
     int n = w.size();
     int m = s.size();
-
     for(int i = 0; i < m; i++) {
         cout << fail[i] << ' ';
     }

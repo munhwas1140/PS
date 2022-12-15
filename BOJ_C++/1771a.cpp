@@ -22,9 +22,9 @@ void solve() {
     }
 
     if(minv != maxv) {
-        cout << t1 * t2 * 2 << '\n';
+        cout << (ll)t1 * t2 * 2 << '\n';
     } else {
-        cout << n * (n - 1) << '\n';
+        cout << (ll)n * (n - 1) << '\n';
     }
 }
 int main() {
