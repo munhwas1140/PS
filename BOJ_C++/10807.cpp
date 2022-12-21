@@ -4,13 +4,16 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-
+int n, v, cnt;
 int main() {
     fastio;
-    cout << setfill('0');
-    cout << setw(2) << 6 << ":" << left;
-    cout << setw(2) << 1 << '\n';
+    cin >> n;
+    vector<int> a(n);
+    for(int &x : a) cin >> x;
 
+    cin >> v;
+    for(int &x : a) if(x == v) cnt++;
+    cout << cnt << '\n';
 
     return 0;
 }

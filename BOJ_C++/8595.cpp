@@ -7,10 +7,14 @@ using pll = pair<ll, ll>;
 
 int main() {
     fastio;
-    cout << setfill('0');
-    cout << setw(2) << 6 << ":" << left;
-    cout << setw(2) << 1 << '\n';
-
-
+    int n;
+    long long sum = 0;
+    string str;
+    cin >> n >> str;
+    for(auto &i : str) if(!isdigit(i)) i = ' ';
+    
+    istringstream in(str);
+    while(in >> n) sum += n;
+    cout << sum << '\n';
     return 0;
 }

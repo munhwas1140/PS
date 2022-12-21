@@ -7,10 +7,10 @@ using pll = pair<ll, ll>;
 
 int main() {
     fastio;
-    cout << setfill('0');
-    cout << setw(2) << 6 << ":" << left;
-    cout << setw(2) << 1 << '\n';
-
-
+    double PI = 3.141592;
+    double d1, d2;
+    cin >> d1 >> d2;
+    cout << fixed << setprecision(6);
+    cout << d1 * 2 + PI * d2 * 2 << '\n';
     return 0;
 }

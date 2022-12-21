@@ -7,10 +7,15 @@ using pll = pair<ll, ll>;
 
 int main() {
     fastio;
-    cout << setfill('0');
-    cout << setw(2) << 6 << ":" << left;
-    cout << setw(2) << 1 << '\n';
-
+    int cnt[26] = {0};
+    string str; cin >> str;
+    for(auto &x : str) {
+        cnt[x - 'a']++;
+    }
+    
+    for(int i = 0; i < 26; i++) {
+        cout << cnt[i] << ' ';
+    }
 
     return 0;
 }

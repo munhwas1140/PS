@@ -4,13 +4,16 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
+void solve() {
+    int n, x;
+    cin >> n >> x;
 
+}
 int main() {
     fastio;
-    cout << setfill('0');
-    cout << setw(2) << 6 << ":" << left;
-    cout << setw(2) << 1 << '\n';
-
-
+    int tc; cin >> tc;
+    while(tc--) {
+        solve();
+    }
     return 0;
 }
