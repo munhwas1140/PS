@@ -11,4 +11,4 @@ int main() {
     while(a % 2 == 0) a /= 2;
     cout << (a == 1) << '\n';
     return 0;
-}
+llkk}
