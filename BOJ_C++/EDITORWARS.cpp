@@ -48,8 +48,7 @@ bool dis(int x, int y) {
 
 void init() {
     memset(p,-1,sizeof(p));
-    memset(e
-    ,-1,sizeof(p));
+    memset(e,-1,sizeof(p));
     fill(sz, sz + 10000, 1);
 }
 
@@ -84,15 +83,6 @@ void solve() {
             }
         }
         cout << "MAX PARTY SIZE IS " << ret << '\n';
-        // for(int i = 0; i < n; i++) {
-        //     cout << find(i) << ' ';
-        // }
-        // cout << '\n';
-        // for(int i = 0; i < n; i++) {
-        //     cout << e[i] << ' ';
-        // }
-
-
     }
 
 }
