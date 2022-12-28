@@ -4,14 +4,17 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-int cnt[200001];
-void solve() 
-    int n; cin >> n;
-    vector<int> a(n);
-    for(int i = 0; i < n; i++) {
-        cin >> a[i];
-        cnt[a[i]]++;
-    }
+int go(int x) {
+    int tmp = x % 4;
+    if(tmp == 0) return x;
+    else if(tmp == 1) return 1;
+    else if(tmp == 2) return x + 1;
+    else return 0;
+}
+void solve() {
+    int s, e;
+    cin >> s >> e;
+    cout << (go(e) ^ go(s - 1)) << '\n';
 }
 int main() {
     fastio;
