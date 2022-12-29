@@ -4,38 +4,49 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-int n, m;
 void solve() {
-    cin >> n >> m;
-    vector<vector<int>> a(n + 1, vector<int>(m + 1, 0));
-    vector<vector<pii>> dp(n + 1, vector<pii>(m + 1, {0, 1e9}));
+    int n; cin >> n;
+
+    vector<int> a(n + 1), b(n + 1);
+
     for(int i = 1; i <= n; i++) {
-        for(int j = 1; j <= m; j++) {
-            cin >> a[i][j];
-        }
+        cin >> a[i];
     }
 
-    int ans = 0;
     for(int i = 1; i <= n; i++) {
-        for(int j = 1; j <= m; j++) {
-            int msz = min(dp[i][j-1].first, dp[i-1][j].first);
-            int mv = min({dp[i-1][j].second, dp[i][j-1].second, a[i][j]});
-            if(mv >= msz + 1) {
-                int x = i - msz;
-                int y = j - msz;
-                if(x >= 1 && y >= 1 && a[x][y] >= msz + 1) {
-                    dp[i][j] = {msz + 1, min(mv, a[x][y])};
-                } else {
-                    dp[i][j] = {msz, mv};
+        cin >> b[i];
+    }
+
+    vector<pii> ans;
+    for(int i = 1; i <= n; i++) {
+        int idx = i;
+        for(int j = i; j <= n; j++) {
+            if(a[idx] > a[j]) {
+                idx = j;
+            } else if(a[idx] == a[j]) {
+                if(b[idx] > b[j]) {
+                    idx = j;
                 }
-            } else {
-                dp[i][j] = {mv, max(mv, a[i][j])};
             }
-            ans = max(ans, dp[i][j].first);
+        }
+        if(i != idx) {
+            swap(a[i], a[idx]);
+            swap(b[i], b[idx]);
+            ans.push_back({i, idx});
         }
     }
 
-    cout << ans << '\n';
+    for(int i = 1; i < n; i++) {
+        if(b[i] > b[i + 1]) {
+            cout << -1 << '\n';
+            return ;
+        }
+    }
+
+    cout << ans.size() << '\n';
+    for(auto [x, y] : ans) {
+        cout << x << ' ' << y << '\n';
+    }
 }
 int main() {
     fastio;

@@ -7,7 +7,19 @@ using pll = pair<ll, ll>;
 
 int main() {
     fastio;
-    cout << (1LL << 29) << '\n';
+    int n; cin >> n;
+    vector<int> a(n);
+    for(int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
 
-    return 0;
+    if(n == 1) return !(cout << (a[0] * 2) << '\n');
+
+    sort(a.begin(), a.end());
+
+    for(int i = 29; i >= 0; i--) {
+
+    }
+
+    return 0;`
 }
