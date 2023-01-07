@@ -12,10 +12,10 @@ void solve() {
     }
 
     int mx = *max_element(a.begin(), a.end());
-    // int num[2][6] = {
-    //     {0, 2, 1, 2, 3, 3},
-    //     {0, 1, 2, 2, 3, 4}
-    // };
+    int num[2][6] = {
+        {0, 2, 1, 2, 3, 3},
+        {0, 1, 2, 2, 3, 4}
+    };
     ll ans = 0;
     int cnt[3] = {0};
     for(int i = 0; i < n; i++) {
@@ -34,13 +34,6 @@ void solve() {
         else if(a[i] == 2) cnt[1]++;
         else if(a[i] == 5) cnt[2]++;
     }
-    // 홀수로 시작
-    // cout << ans << '\n';
-    // for(int i = 0; i < 3; i++) {
-    //     cout << cnt[i] << ' ';
-    // }
-    // cout << '\n';
-    
     int mn = min(cnt[0], cnt[1]);
     cnt[0] -= mn;
     cnt[1] -= mn;
