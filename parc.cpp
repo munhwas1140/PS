@@ -4,77 +4,56 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
+
 void solve() {
-    int n; cin >> n;
-    int cnt[200001] = {0};
-    bool ok = true;
-    int mx = -1;
-    vector<pii> a(n);
-    for(int i = 0; i < n; i++) {
-        int tmp; cin >> tmp;
-        a[i] = {tmp, i};
-        mx = max(tmp, mx);
-        cnt[tmp]++;
-        if(cnt[tmp] > 3) {
-            ok = false;
+    int n, m;
+    cin >> n >> m;
+    vector<int> a(n + 1);
+    vector<pii> pv;
+    for(int i = 1; i <= n; i++) {
+        cin >> a[i];
+        pv.push_back({a[i], i});
+    }
+
+    sort(pv.begin(), pv.end());
+    int s, e;
+    s = e = 0;
+    
+    int sum = 0;
+    int ans = 1e9;
+    set<int> st;
+    while(s < n && e < n && s <= e) {
+        while(e < n && sum + pv[e].first <= m) {
+            sum += pv[e].first;
+            st.insert(pv[e].second);
+            e++;
         }
-    }
 
-    if(mx != n || !ok) {
-        cout << "NO" << '\n';
-        return ;
-    }
-
-    sort(a.begin(), a.end());
-    vector<vector<int>> ans(2, vector<int>(n));
-    vector<vector<bool>> check(2, vector<bool>(n + 1));
-
-    int uit = 1;
-    int dit = 1;
-
-    for(auto &[val, idx] : a) {
-        if(cnt[val] == 2) {
-            if(check[1][val]) {
-                cout << "NO" << '\n';
-                return ;
-            }
-            check[1][val] = true;
-            ans[1][idx] = val;
-            while(check[0][uit]) uit++;
-            check[0][uit] = true;
-            if(uit > val) {
-                cout << "NO" << '\n';
-                return ;
-            }
-            ans[0][idx] = uit++;
-            cnt[val]--;
-        } else {
-            if(check[0][val]) {
-                cout << "NO" << '\n';
-                return ;
-            }
-            check[0][val] = true;
-            ans[0][idx] = val;
-            while(check[1][dit]) dit++;
-            check[1][dit] = true;
-            if(val < dit) {
-                cout << "NO" << '\n';
-                return ;
-            }
-            ans[1][idx] = dit++;
-            cnt[val]--;
+        int tmp = n - (e - s) + 1;
+        if(e == n) {
+            ans = min(ans, tmp);
+            continue;
         }
-    }
-
-    cout << "YES" << '\n';
-    for(int i = 0; i < 2; i++) {
-        for(int j = 0; j < n; j++) {
-            cout << ans[i][j] << ' ';
+        else if(st.count(e - s + 1)) tmp--;
+        else {
+            int val = a[e - s + 1];
+            for(auto it = st.begin(); it != st.end(); it++) {
+                if(a[*it] == val) {
+                    tmp--;
+                    break;
+                }
+            }
         }
-        cout << '\n';
+
+        ans = min(ans, tmp);
+
+        st.erase(pv[s].second);
+        sum -= pv[s].first;
+        s++;
     }
-    return ;
+    cout << ans << '\n';
 }
+
 int main() {
     fastio;
     int tc; cin >> tc;
