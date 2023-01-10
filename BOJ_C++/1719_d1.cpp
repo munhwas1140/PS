@@ -6,22 +6,19 @@ using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 void solve() {
     int n; cin >> n;
-    vector<ll> a(n);
-    for(int i = 0; i < n; i++) {
+    vector<int> a(n + 1), dp(n + 1);
+    for(int i = 1; i <= n; i++) {
         cin >> a[i];
+        a[i] ^= a[i - 1];
     }
 
-    vector<ll> dp(n, 1);
-    ll ans = 1;
-    for(int i = 0; i < n; i++) {
-        for(int j = i - 1; j >= max(0, i - 257); j--) {
-            if((a[i] ^ j) > (a[j] ^ i)) {
-                dp[i] = max(dp[i], dp[j] + 1);
-            }
+    for(int i = 1; i <= n; i++) {
+        dp[i] = dp[i - 1] + 1;
+        for(int j = 0; j < i; j++) {
+            if(a[j] == a[i]) dp[i] = min(dp[i], dp[j] + i - j - 1);
         }
-        ans = max(ans, dp[i]);
     }
-    cout << ans << '\n';
+    cout << dp[n] << '\n';
 }
 int main() {
     fastio;
