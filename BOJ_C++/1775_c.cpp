@@ -7,7 +7,6 @@ using pll = pair<ll, ll>;
 void solve() {
     ll a, b;
     cin >> a >> b;
-    cout << a << ' ' << b << '\n';
     if(a < b || (a & b) != b) cout << -1 << '\n';
     else if(a == b) cout << a << '\n';
     else {
@@ -33,6 +32,7 @@ void solve() {
         
         if(aa[idx + 1]) {
             cout << -1 << '\n';
+            return ;
         }
         
         a |= (1LL << (idx + 1));
