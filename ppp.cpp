@@ -4,79 +4,72 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-int n;
-int a[50][50];
-int it, tmp;
-void go(int s, int now) {
-    if(now == 1) {
-        a[s][s] = it;
-        return ;
-    }
-    if(now <= 0) return;
-    
-    for(int i = s; i < s + now; i++) {
-        a[s][i] = it;
-        it += tmp;
-        if(tmp > 0) {
-            tmp -= 1;
-            tmp *= -1;
-        } else {
-            tmp += 1;
-            tmp *= -1;
-        }
-    }
-
-    for(int i = s + 1; i < s + now; i++) {
-        a[i][s + now - 1] = it;
-        it += tmp;
-        if(tmp > 0) {
-            tmp -= 1;
-            tmp *= -1;
-        } else {
-            tmp += 1;
-            tmp *= -1;
-        }
-    }
-
-    for(int i = s + now - 2 ; i >= s; i--) {
-        a[s + now - 1][i] = it;
-        it += tmp;
-        if(tmp > 0) {
-            tmp -= 1;
-            tmp *= -1;
-        } else {
-            tmp += 1;
-            tmp *= -1;
-        }
-    }
-
-    for(int i = s + now - 2; i >= s + 1; i--) {
-        a[i][s] = it;
-        it += tmp;
-        if(tmp > 0) {
-            tmp -= 1;
-            tmp *= -1;
-        } else {
-            tmp += 1;
-            tmp *= -1;
-        }
-    }
-
-    go(s + 1, now - 2);
-}
+const ll MOD = 1e9 + 7;
+ll f[200001];
 void solve() {
-    cin >> n;
-    it = 1, tmp = n * n - 1;
-    go(0, n);
-
-    for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            cout << a[i][j] << ' ';
-        }
-        cout << '\n';
+    ll n; cin >> n;
+    vector<vector<ll>> g(n + 1);
+    for(ll i = 0; i < n - 1; i++) {
+        ll t1, t2;
+        cin >> t1 >> t2;
+        g[t1].push_back(t2);
+        g[t2].push_back(t1);
     }
+
+    vector<vector<ll>> gt(n + 1);
+    vector<ll> d(n + 1);
+    vector<ll> siz(n + 1);
+    d[1] = 1;
+    function<ll(ll, ll, ll)> dfs = [&] (ll now, ll p, ll dep) {
+        siz[now] = 1;
+        for(ll &next : g[now]) {
+            if(next != p) {
+                gt[now].push_back(next);
+                d[next] = d[now] + 1;
+                siz[now] += dfs(next, now, dep + 1);
+            }
+        }
+        return siz[now];
+    };
+    dfs(1, -1, 1);
+
+    ll ans = f[n - 1];
+    cout << ans << '\n';
+    vector<ll> dp(n + 1, -1);
+
+    function<ll(ll)> go = [&] (ll now) {
+        
+        ll &ret = dp[now];
+        if(ret != -1) return ret;
+        ret = 0;
+
+        for(ll &next : gt[now]) {
+            ret += go(next);
+            ret %= MOD;
+        }
+        
+
+        ll sz = (ll)gt[now].size();
+        if(sz != 0) {
+            ll tmp = f[sz - 1] * f[n - d[now] - 1];
+            tmp %= MOD;
+            ret += tmp;
+            ret %= MOD;
+        }
+        return ret;
+    };
+
+    ans *= go(1);
+    cout << ans << '\n';
+    
 }
 int main() {
+    f[0] = 1LL;
+    f[1] = 2LL;
+    for(ll i = 2; i <= 200000; i++) {
+        f[i] = f[i - 1] * 2;
+        f[i] %= MOD;
+    }
     fastio;
     int tc; cin >> tc;
     while(tc--) {
