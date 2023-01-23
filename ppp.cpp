@@ -30,7 +30,7 @@ void solve() {
             }
         }
         return siz[now];
-    };
+    }
     dfs(1, -1, 1);
 
     ll ans = f[n - 1];
