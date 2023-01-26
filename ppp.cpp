@@ -7,40 +7,34 @@ using pll = pair<ll, ll>;
 void solve() {
     int n, m;
     cin >> n >> m;
-    vector<vector<int>> a(n, vector<int>(m));
-    vector<vector<int>> pos(n, vector<int>(10));
-    vector<int> ans(n + 1);
-    set<string> st;
-
+    vector<int> a(n), b(m);
+    map<int,int> mp;
     for(int i = 0; i < n; i++) {
-        for(int j = 0; j < m; j++) {
-            cin >> a[i][j];
-            a[i][j]--;
-            pos[i][a[i][j]] = j;
-        }
-        string tmpstr = "";
-        for(int j = 0; j < m; j++) {
-            tmpstr.push_back(char(pos[i][j] + '0'));
-            st.insert(tmpstr);
-        }
+        cin >> a[i];
+        mp[a[i]]++;
     }
 
-    for(int i = 0; i < n; i++) {
-        string now = "";
-        for(int j = 0; j < m; j++) {
-            now.push_back(char(a[i][j] + '0'));
-            if(st.count(now)) {
-                ans[i] = j + 1;
-            } else {
-                break;
-            }
-        }
+    priority_queue<pii> pq;
+
+    for(auto it = mp.begin(); it != mp.end(); it++) {
+        pq.push({it->second, it->first});
     }
 
-    for(int i = 0; i < n; i++) {
-        cout << ans[i] << ' ';
+    for(int i = 0; i < m; i++) {
+        cin >> b[i];
     }
-    cout << '\n';
+    sort(b.begin(), b.end());
+    int ans = 0;
+    for(int i = m - 1; i >= 0; i--) {
+        auto p = pq.top();
+        pq.pop();
+        ans += min(p.first, b[i]);
+        p.first-= min(p.first, b[i]);
+        if(p.second != 0) {
+            pq.push(p);
+        }
+    }
+    cout << ans << '\n';
 }
 int main() {
     fastio;

@@ -14,7 +14,7 @@ int main() {
         a[i]--;
     }
 
-    vector<bool> visited(n + 1), finished(n + 1);
+    vector<bool> visited(n), finished(n);
     int ans = 0;
     function<void(int)> check = [&] (int now) {
         visited[now] = true;
