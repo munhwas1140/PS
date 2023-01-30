@@ -15,14 +15,6 @@ int main() {
         b[i] = a[i];
     }
     sort(b.begin(), b.end());
-    for(int i = 0; i < n; i++) {
-        cout << a[i] << ' ';
-    }
-    cout << '\n';
-    for(int i = 0; i < n; i++) {
-        cout << b[i] << ' ';
-    }
-    cout << '\n';
 
     int ans = 0;
     vector<bool> check(n);
