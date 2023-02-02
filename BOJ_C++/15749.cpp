@@ -22,13 +22,13 @@ int main() {
         if(ret != -1) return ret;
         ret = 10000;
 
-        if(idx + 1 < m && a[now] <= b[idx + 1].first) {
-            ret = min(ret, go(now, idx + 1) + 1);
-        }
-
         for(int i = 1; i <= b[idx].second; i++) {
             if(now + i > n) break;
             if(a[now + i] <= b[idx].first) ret = min(ret, go(now + i, idx));
+        }
+
+        if(idx + 1 < m && a[now] <= b[idx + 1].first) {
+            ret = min(ret, go(now, idx + 1) + 1);
         }
 
         return ret;
