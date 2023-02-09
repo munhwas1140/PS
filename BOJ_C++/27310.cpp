@@ -7,11 +7,12 @@ using pll = pair<ll, ll>;
 
 int main() {
     fastio;
-    int n; cin >> n;
-    vector<pii> a;
-    for(int i = 0; i < n; i++) { 
-
+    string str;
+    cin >> str;
+    int ans = str.size() + 2;
+    for(char &c : str) {
+        if(c == '_') ans += 5;
     }
-
+    cout << ans << '\n';
     return 0;
 }
