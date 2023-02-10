@@ -23,6 +23,10 @@ void solve() {
         }
     }
 
+    if(mnx == 1e9) {
+        cout << 0 << '\n';
+        return ;
+    }
     int cnt = 0;
     for(int i = mnx; i <= mxx; i++) {
         for(int j = mny; j <= mxy; j++) {
