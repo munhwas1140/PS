@@ -17,7 +17,6 @@ int main() {
 
     sort(a.begin(), a.end());
 
-
     for(auto &[x, y] : a) {
         l += y;
         r -= y;
