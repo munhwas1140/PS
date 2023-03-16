@@ -7,31 +7,12 @@ using pll = pair<ll, ll>;
 vector<int> a;
 int n, m, c;
 bool check(int mid) {
-    int cnt = 0, bus = 0;
-    int diffmax = 0;
-    int pre = -1;
-    for(int i = 0; i < n; i++) {
-        if(pre == -1) {
-            cnt = 1;
+    int pre = 0;
+    int bus = 1;
+    for(int i = 1; i < n; i++) {
+        if(i - pre >= c || a[i] - a[pre] > mid) {
+            pre = i;
             bus++;
-            pre = a[i];
-        } else {
-            cnt++;
-            if(cnt > c) {
-                cnt = 1;
-                diffmax = 0;
-                bus++;
-                pre = a[i];
-            } else {
-                int diff = a[i] - pre;
-                diffmax = max(diffmax, diff);
-                if(diffmax > mid) {
-                    cnt = 1;
-                    diffmax = 0;
-                    bus++;
-                    pre = a[i];
-                }
-            }
         }
     }
     return bus <= m;
@@ -40,9 +21,7 @@ int main() {
     fastio;
     cin >> n >> m >> c;
     a.resize(n);
-    for(int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
+    for(int i = 0; i < n; i++) cin >> a[i];
 
     sort(a.begin(), a.end());
     
