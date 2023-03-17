@@ -6,7 +6,6 @@ using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 int n, m, k;
 vector<pii> g[50505];
-vector<pii> pos;
 vector<int> dijk(int s) {
     vector<int> dist(n + 2, 1e9);
 
@@ -40,11 +39,8 @@ int main() {
         g[e].push_back({s, t});
     }
 
-    for(int i = 0; i < k; i++) {
-        int x, h;
-        cin >> x >> h;
-        pos.push_back({x, h});
-    }
+    vector<pii> pos(k);
+    for(auto &[x, h] : pos) cin >> x >> h;
 
     vector<int> dist = dijk(n);
 
