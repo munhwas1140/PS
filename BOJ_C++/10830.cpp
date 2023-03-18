@@ -16,7 +16,7 @@ vector<vector<int>> mul(vector<vector<int>> &a, vector<vector<int>> &b) {
                 ret[i][j] %= MOD;
             }
         }
-    }
+    
     return ret;
 }
 vector<vector<int>> powpow(vector<vector<int>> &a, int b) {    
