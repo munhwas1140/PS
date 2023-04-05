@@ -1,24 +1,24 @@
 #include <bits/stdc++.h>
+#include <typeinfo>
 using namespace std;
+#define fastio cin.tie(0)->sync_with_stdio(0)
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    int tc; cin >> tc;
-    while(tc--) {
-        ll ans = 0;
-        while(true) {
-            int n; cin >> n;
-            if(n == 0) break;
-            ll tmp = (1 << n) - 1;
-            cout << "- " << tmp << '\n';
-            cout.flush();
-            ans += tmp;
-        }
-        cout << "! " << ans << '\n';
-        cout.flush();
-    }
+    fastio;
+    int a[2] = {0, 1};
+    int c = 2;
+    cout << a << '\n';
+    cout << &a << '\n';
+    cout << a + 1 << '\n';
+    cout << typeid(c).name() << '\n';
+    cout << typeid(a).name() << '\n';
+    cout << typeid(&a).name() << '\n';
+    cout << &a + 1 << '\n';
+
+    cout << *(a + 1) << '\n';
+
     return 0;
 }

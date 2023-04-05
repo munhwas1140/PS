@@ -8,6 +8,7 @@ using pll = pair<ll, ll>;
 int main() {
     fastio;
     int n; cin >> n;
+
     stack<pii> st;
     ll ans = 0;
     for(int i = 0; i < n; i++) {
