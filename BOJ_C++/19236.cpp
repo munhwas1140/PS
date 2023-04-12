@@ -34,7 +34,7 @@ int go(int x, int y, int dir, vector<vector<int>> mp, vector<int> dir, vector<pi
 
     int ret = 0;
     bool ok = false;
-    
+
 
 }
 
