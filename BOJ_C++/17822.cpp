@@ -15,6 +15,9 @@ void turn(vector<vector<int>> &a, int i, int d, int k) {
     reverse(a[i].begin(), a[i].begin() + k);
     reverse(a[i].begin() + k, a[i].end());
     reverse(a[i].begin(), a[i].end());
+    reverse(valid[i], valid[i] + k);
+    reverse(valid[i] + k, valid[i] + m);
+    reverse(valid[i], valid[i] + m);
 }
 void check(vector<vector<int>> &a) {
     vector<vector<bool>> visited(n, vector<bool>(m));
@@ -38,9 +41,9 @@ void check(vector<vector<int>> &a) {
                 
                 for(int dir = 0; dir < 4; dir++) {
                     int nx = x + dx[dir];
-                    int ny = (y + dy[dir]) % m;
+                    int ny = (y + dy[dir] + m) % m;
                     if(nx < 0 || nx >= n) continue;
-                    if(a[nx][ny] == a[i][j] && !visited[nx][ny]) {
+                    if(a[nx][ny] == a[i][j] && !visited[nx][ny] && valid[nx][ny]) {
                         f = true;
                         visited[nx][ny] = true;
                         q.push({nx, ny});
@@ -51,7 +54,6 @@ void check(vector<vector<int>> &a) {
             if(f) remove.push_back({i, j});
         }
     }
-
     if(remove.size()) {
         for(auto &[x, y] : remove) {
             valid[x][y] = false;
@@ -62,7 +64,7 @@ void check(vector<vector<int>> &a) {
             for(int j = 0; j < m; j++) {
                 if(ave < double(a[i][j])) {
                     a[i][j] -= 1;
-                } else {
+                } else if(ave > double(a[i][j])) {
                     a[i][j] += 1;
                 }
             }
@@ -88,14 +90,14 @@ int main() {
         }
         check(a);
 
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < m; j++) {
-                if(valid[i][j] == false) cout << "x ";
-                else cout << a[i][j] << ' ';
-            }
-            cout << '\n';
-        }
-        cout << '\n';
+        // for(int i = 0; i < n; i++) {
+        //     for(int j = 0; j < m; j++) {
+        //         if(valid[i][j] == false) cout << "x ";
+        //         else cout << a[i][j] << ' ';
+        //     }
+        //     cout << '\n';
+        // }
+        // cout << '\n';
     }
 
     int ans = 0;
