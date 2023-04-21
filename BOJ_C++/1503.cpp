@@ -7,26 +7,30 @@ using pll = pair<ll, ll>;
 
 int main() {
     fastio;
-    vector<bool> check(1001);
+    vector<bool> check(1001, false);
     int n, m; cin >> n >> m;
     for(int i = 0; i < m; i++) {
         int tmp; cin >> tmp;
         check[tmp] = true;
     }
     
+    vector<int> cand;
+    for(int i = 1; i <= 51; i++) cand.push_back(i);
+    for(int i = n - 51; i <= n + 51; i++) {
+        if(i >= 1) cand.push_back(i);
+    }
+
     int ans = 1e9;
-    for(int i = 1; i <= 250; i++) {
-        if(check[i]) continue;
-        for(int j = 1; j <= 250; j++) {
-            if(check[j]) continue;
-            for(int k = 1; k <= 250; k++) {
-                if(check[k]) continue;
-                ans = min(ans, abs(n - i * j * k));
+    for(auto x : cand) {
+        if(check[x]) continue;
+        for(auto y : cand) {
+            if(check[y]) continue;
+            for(auto z : cand) {
+                if(check[z]) continue;
+                ans = min(ans, abs(n - x * y * z));
             }
         }
     }
-
     cout << ans << '\n';
-
     return 0;
 }
