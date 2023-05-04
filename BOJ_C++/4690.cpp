@@ -11,7 +11,6 @@ int main() {
     for(int i = 0; i <= 100; i++) {
         c[i] = pow(i, 3);
     }
-    vector<vector<int>> ans;
     for(int i = 2; i <= 100; i++) {
         for(int x = 2; x <= 100; x++) {
             for(int y = x; y <= 100; y++) {
@@ -27,4 +26,3 @@ int main() {
     }
     return 0;
 }
-
