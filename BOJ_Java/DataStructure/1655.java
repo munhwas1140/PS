@@ -30,7 +30,8 @@ class Main {
             }
             bw.write(String.valueOf(left.peek()) + "\n");
         }
-        
+        int[] box;
+        box.si
         bw.flush();
         bw.close();
         br.close();
