@@ -4,37 +4,36 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-int n;
+
 int main() {
     fastio;
-    cin >> n;
+    int n; cin >> n;
     vector<pii> a(n);
-    for(auto &[d, t] : a) {
-        cin >> d >> t;
-    }
+    for(auto &[d, x] : a) cin >> d >> x;
 
-    sort(a.rbegin(), a.rend());
-    int ans = 0, it = 0;
-    for(int i = a[it].first - 1; i >= 0; i--) {
+    sort(a.begin(), a.end());
+    int it = 0;
+    for(int i = 1; i <= a.back().first; i++) {
+        while(it < n && (i > a[it].first || a[it].second == 0)) it++;
         if(it == n) break;
-        if(i % 7 >= 5 || i > a[it].first - 1) continue;
-
+        if((i - 1) % 7 >= 5) continue;
         a[it].second--;
-        if(a[it].second == 0) it++;
     }
 
-    if(it == n) return !(cout << 0 << '\n');
-
-    for(int i = a[it].first - 1; i >= 0; i--) {
+    it = 0;
+    int ans = 0;
+    for(int i = 1; i <= a.back().first; i++) {
+        while(it < n && (i > a[it].first || a[it].second == 0)) it++;
         if(it == n) break;
-        if(i > a[it].first - 1) continue;
-
-        a[it].second--; ans++;
-        if(a[it].second == 0) it++;
+        a[it].second--;
+        ans++;
     }
 
-    if(it == n) cout << ans << '\n';
-    else cout << -1 << '\n';
+    for(int i = 0; i < n; i++) {
+        if(a[i].second != 0) return !(cout << -1 << '\n');
+    }
+    cout << ans << '\n';
+
 
     return 0;
 }
