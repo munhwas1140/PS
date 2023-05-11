@@ -5,17 +5,7 @@ using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n);
-    for(int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
-
-    int ans = 0;
-    for(int i = 0; i < n / 2; i++) {
-        ans = gcd(ans, a[i] - a[n - i - 1]);
-    }
-    cout << ans << '\n';
+    
 }
 int main() {
     fastio;

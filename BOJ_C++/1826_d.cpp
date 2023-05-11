@@ -11,9 +11,18 @@ void solve() {
         cin >> a[i];
     }
 
-    int ans = 0;
-    for(int i = 0; i < n / 2; i++) {
-        ans = gcd(ans, a[i] - a[n - i - 1]);
+    priority_queue<pii> r;
+    priority_queue<int> l;
+    l.push(a[0] + 1);
+    for(int i = 0; i < n; i++) {
+        r.push({a[n - i - 1] - (n - i), n - i - 1});
+    }
+
+    int ans = -1;
+    for(int i = 1; i < n - 1; i++) {
+        while(r.top().second <= i) r.pop();
+        ans = max(ans, a[i] + l.top() + r.top().first);
+        l.push(a[i] + i + 1);
     }
     cout << ans << '\n';
 }
