@@ -7,8 +7,13 @@ using pll = pair<ll, ll>;
 
 int main() {
     fastio;
-    string a = "AAB", b = "AAAA";
-    cout << (a < b) << '\n';
+    int n; cin >> n;
+    int ans = 0;
+    for(int i = n; i >= 1; i--) {
+        int tmp; cin >> tmp;
+        ans = max(ans, tmp - i);
+    }
+    cout << ans << '\n';
 
     return 0;
 }
