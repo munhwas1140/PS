@@ -5,22 +5,8 @@ using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 int n, k;
-int dp[101][10001];
+int dp[10001];
 int a[101];
-
-int go(int idx, int val) {
-    if(val < 0) return 1e9;
-    if(idx == 0) {
-        if(val == 0) return 0;
-        return 1e9;
-    }
-    
-    int &ret = dp[idx][val];
-    if(ret != -1) return ret;
-
-    ret = min(go(idx - 1, val), go(idx, val - a[idx]) + 1);
-    return ret;
-}
 
 int main() {
     fastio;
@@ -29,7 +15,16 @@ int main() {
         cin >> a[i];
     }
     memset(dp,-1,sizeof(dp));
-    cout << go(n, k) << '\n';
-
+    dp[0] = 0;
+    for(int i = 1; i <= n; i++) {
+        for(int j = a[i]; j <= k; j++) {
+            if(dp[j - a[i]] != -1) {
+                if(dp[j] == -1 || dp[j] > dp[j - a[i]] + 1) {
+                    dp[j] = dp[j - a[i]] + 1;
+                }
+            }
+        }
+    }
+    cout << dp[k] << '\n';
     return 0;
 }
