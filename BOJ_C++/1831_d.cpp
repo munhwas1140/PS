@@ -4,20 +4,40 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
+ll a[200000], b[200000];
 void solve() {
     int n; cin >> n;
-    vector<pii> a(n);
-    for(int i = 0; i < n; i++) cin >> a[i].first;
-    for(int i = 0; i < n; i++) cin >> a[i].second;
-    ll ans = 0;
-    vector<map<int,int>> cnt(2 * n + 1);
+    int lim = int(floor(sqrt(2 * n)));
+    vector<vector<int>> cnt(lim + 1, vector<int>(n + 1));
+    for(int i = 0; i < n; i++) cin >> a[i];
     for(int i = 0; i < n; i++) {
-        for(int j = 1; j <= (2 * n) / a[i].first; j++) {
-            if(cnt[j].find(a[i].first * j - a[i].second) != cnt[j].end()) {
-                ans += ll(cnt[j][a[i].first * j - a[i].second]);
-            } 
+        cin >> b[i];
+        if(a[i] <= lim) {
+            cnt[a[i]][b[i]]++;
         }
-        cnt[a[i].first][a[i].second]++;
+    }
+
+    ll ans = 0;
+    for(int i = 0; i < n; i++) {
+        if(a[i] <= lim) {
+            // a[i] == a[j], a[i] * a[i] - b[i];
+            // if(a[i] * a[i] - b[i] <= n) to cnt col size -> 2 * n + 1
+            if(a[i] * a[i] - b[i] >= 0 && a[i] * a[i] - b[i] <= n) {
+                ans += cnt[a[i]][a[i] * a[i] - b[i]];
+            }
+        }
+    }
+    for(int i = 2; i <= lim; i += 2) {
+        ans -= cnt[i][(i * i) / 2];
+    }
+    ans /= 2;
+
+    for(int i = 0; i < n; i++) {
+        for(int j = 1; j <= lim && j < a[i] && j * a[i] <= 2 * n; j++) {
+            if(a[i] * j - b[i] >= 0 && a[i] * j - b[i] <= n) {
+                ans += cnt[j][a[i] * j - b[i]];
+            }
+        }
     }
     cout << ans << '\n';
 }
@@ -29,5 +49,3 @@ int main() {
     }
     return 0;
 }
-// ans += ll(cnt[j][a[i].first * j - a[i].second]);
-// 0이더라도 계속 생겨서 메모리 초과됨
