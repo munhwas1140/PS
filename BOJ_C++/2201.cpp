@@ -2,39 +2,36 @@
 using namespace std;
 #define fastio cin.tie(0)->sync_with_stdio(0)
 using ll = long long;
-ll k;
-int sz;
-ll dp[1000000][3];
-
-void tracking(int sz, ll kth, int prev) {
-    if(sz == 0) return ;
+using pii = pair<int, int>;
+using pll = pair<ll, ll>;
+ll LMAX = 1'000'000'000'000'000'000;
+ll dp[200];
+ll go(int now) {
+    if(now == 1 || now == 2) return ll(now);
     
-    if(prev == 0 && dp[sz][0] < kth) {
+    ll &ret = dp[now];
+    if(ret != -1) return ret;
+    return ret = go(now - 1) + go(now - 2);
+}
+void trace(int now, ll k) {
+    if(now == 0) return ;
+    if(go(now) <= k) {
         cout << 1;
-        tracking(sz - 1, kth - dp[sz][0], 1);
-    } else {
+        trace(now - 1, k - go(now));
+    } else  {
         cout << 0;
-        tracking(sz - 1,kth,0);
+        trace(now - 1, k);
     }
 }
 int main() {
     fastio;
-    cin >> k;
-    ll sum = 1;
-    dp[1][1] = 1;
+    ll k; cin >> k;
+    memset(dp,-1,sizeof(dp));
     for(int i = 2; ;i++) {
-        
-        dp[i][0] = dp[i-1][1] + dp[i-1][0];
-        dp[i][1] = dp[i-2][1] + dp[i-1][0];       
-        sum += dp[i][0] + dp[i][1];
-        if(k <= sum) {
-            sz = i;
+        if(k < go(i)) {
+            trace(i - 1, k);
             break;
         }
-        
     }
-    tracking(sz, k, 0);
-
-    
     return 0;
 }
