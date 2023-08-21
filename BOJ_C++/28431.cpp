@@ -4,22 +4,16 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-int fibo[31];
-void solve() {
-    int n, k;
-    cin >> n >> k;
 
-
-}
 int main() {
     fastio;
-
-    fibo[2] = 1;
-
-    int tc; cin >> tc;
-    while(tc--) {
-        solve();
+    set<int> st;
+    for(int i = 0; i < 5; i++) {
+        int tmp; cin >> tmp;
+        if(st.count(tmp)) st.erase(tmp);
+        else st.insert(tmp);
     }
+    cout << *(st.begin()) << '\n';
 
     return 0;
 }

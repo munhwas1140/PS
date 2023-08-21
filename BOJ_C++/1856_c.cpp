@@ -4,22 +4,32 @@ using namespace std;
 using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
-int fibo[31];
 void solve() {
     int n, k;
     cin >> n >> k;
+    vector<int> a(n);
+    for(int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
 
+    int ans = a[0];
+    for(int i = 1; i < n; i++) {
+        int now = a[i];
+        ans = max(ans, now);
 
+        for(int j = i - 1; j >= 0; j--) {
+            if(a[j] <= now) {
+
+            }
+        }
+    }
+    cout << ans << '\n';
 }
 int main() {
     fastio;
-
-    fibo[2] = 1;
-
     int tc; cin >> tc;
     while(tc--) {
         solve();
     }
-
     return 0;
 }
