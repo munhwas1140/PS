@@ -11,7 +11,6 @@ int main() {
     cin >> s >> n >> m;
     
     int cnt = 0;
-
     
     for(int i = 0; i < n + m; i++) {
         int tmp; cin >> tmp;
