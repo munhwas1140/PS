@@ -5,7 +5,7 @@ using ll = long long;
 using pii = pair<int, int>;
 using pll = pair<ll, ll>;
 void solve() {
-    
+
 
 }
 int main() {
@@ -15,4 +15,4 @@ int main() {
         solve();
     }
     return 0;
-}
+}Z
