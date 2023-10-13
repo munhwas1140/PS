@@ -1,76 +1,42 @@
-#include <bits/stdc++.h>
+#include <iostream>
 using namespace std;
-#define fastio cin.tie(0)->sync_with_stdio(0)
-using ll = long long;
-using pii = pair<int, int>;
-using pll = pair<ll, ll>;
-bool check[1001];
-void solve() {
-    int n, m;
-    cin >> n >> m;
-    if(check[m] == false) {
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < m; j++) {
-                cout << i * m + j + 1 << ' ';
-            }
-            cout << '\n';
-        }
-    } else if(check[n] == false) {
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < m; j++) {
-                cout << i + j * n + 1 << ' ';
-            }
-            cout << '\n';
-        }
-    } else {
-        bool f = true;
-        if(n > m) {
-            f = false;
-            swap(n, m);
-        }
-        vector<vector<int>> a(n, vector<int>(m));
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < m; j++) {
-                a[i][j] = i * m + j + 1;
-            }
-            reverse(a[i].begin(), a[i].begin() + i);
-            reverse(a[i].begin() + i, a[i].end());
-            reverse(a[i].begin(), a[i].end());
-        }
-        if(f) {
-            for(int i = 0; i < n; i++) {
-                for(int j = 0; j < m; j++) {
-                    cout << a[i][j] << ' ';
-                }
-                cout << '\n';
-            }
-        } else {
-            for(int j = 0; j < m; j++) {
-                for(int i = 0; i < n; i++) {
-                    cout << a[i][j] << ' ';
-                }
-                cout << '\n';
-            }
 
-
+void hanoi_tower(int n, int a, int b, int c, unsigned long long k, int *count) {
+    if (n > 0) {
+        hanoi_tower(n - 1, a, c, b, k, count);
+        (*count)++;
+        if (*count == k) {
+            cout << a << " " << c << endl;
+            return;
         }
+        hanoi_tower(n - 1, b, a, c, k, count);
     }
-
 }
+
 int main() {
-    fill(check,check + 1001, true);
-    check[0] = false;
-    for(int i = 2; i <= 1000; i++) {
-        if(check[i]) {
-            for(int j = i + i; j <= 1000; j += i) {
-                check[j] = false;
+    int t;
+    cin >> t;
+    while (t--) {
+        int a;
+        unsigned long long b;
+        cin >> a >> b;
+        int count = 0;
+        unsigned long long standard = 1ULL << (a - 1);
+        int even_odd = 0;
+        for (int i = 0; i < a; i++) {
+            if (b > standard) {
+                b = b - standard;
+                standard = standard >> 1;
+                even_odd++;
+            } else {
+                break;
             }
         }
-    }
-    fastio;
-    int tc; cin >> tc;
-    while(tc--) {
-        solve();
+        if (even_odd % 2 == 0) {
+            hanoi_tower(a - even_odd, 1, 2, 3, b, &count);
+        } else {
+            hanoi_tower(a - even_odd, 2, 1, 3, b, &count);
+        }
     }
     return 0;
 }
