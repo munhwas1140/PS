@@ -1,0 +1,5 @@
+/Users/w/PS/cmake-build-debug/CMakeFiles/28278.dir
+/Users/w/PS/cmake-build-debug/CMakeFiles/test.dir
+/Users/w/PS/cmake-build-debug/CMakeFiles/Out.dir
+/Users/w/PS/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/w/PS/cmake-build-debug/CMakeFiles/rebuild_cache.dir
