@@ -4,4 +4,4 @@
 .idea
 cmake-build-debug
 CMakeLists.txt
-RUST/out/*
+RUST/out/*`
