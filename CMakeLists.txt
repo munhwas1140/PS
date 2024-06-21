@@ -4,4 +4,4 @@ project(PS)
 set(CMAKE_CXX_STANDARD 17)
 
 
-add_executable(Out C++/31938.cpp)
+add_executable(Out C++/2493.cpp)
