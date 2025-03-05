@@ -1,7 +1,4 @@
 *.class
 *.out
 .vscode
-.idea
-cmake-build-debug
-RUST/out/*`
-CMakeLists.txt
+Out
